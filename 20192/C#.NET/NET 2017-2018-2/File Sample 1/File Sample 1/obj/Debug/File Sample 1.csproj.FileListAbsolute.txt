@@ -1,0 +1,7 @@
+c:\temp\File Sample 1\File Sample 1\bin\Debug\File Sample 1.exe.config
+c:\temp\File Sample 1\File Sample 1\bin\Debug\File Sample 1.exe
+c:\temp\File Sample 1\File Sample 1\bin\Debug\File Sample 1.pdb
+c:\temp\File Sample 1\File Sample 1\obj\Debug\File Sample 1.csprojAssemblyReference.cache
+c:\temp\File Sample 1\File Sample 1\obj\Debug\File Sample 1.csproj.CoreCompileInputs.cache
+c:\temp\File Sample 1\File Sample 1\obj\Debug\File Sample 1.exe
+c:\temp\File Sample 1\File Sample 1\obj\Debug\File Sample 1.pdb

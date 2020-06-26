@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"DTD/xhtml11-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Requirements and User Interface for a Simple Address Boo</title>
+</head>
+
+<body>
+
+<h2>Requirements and User Interface for a Simple Address Book</h2>
+
+<h3>Requirements Statement</h3>
+
+<p>
+The software to be designed is a program that can be used to maintain an address book.
+An address book holds a collection of entries, each recording a person's first and
+last names, address, city, state, zip, and phone number. 
+</p>
+
+<p>
+It must be possible to add
+a new person to an address book, to edit existing information about a person (except
+the person's name), and to delete a person.  It must be possible to sort the entries
+in the address book alphabetically by last name (with ties broken by first name if 
+necessary), or by ZIP code (with ties broken by name if necessary).  It must be 
+possible to print out all the entries in the address book in "mailing label" format. 
+</p>
+
+<p>
+It must be possible to create a new address book, to open a disk file containing 
+an existing address book to close an address book, and to save an address book to
+a disk file, using standard New, Open, Close, Save and Save As ...  File menu options.  
+The program's File menu will also have a Quit option to allow closing all open 
+address books and terminating the program.
+</p>
+
+<p>
+The initial requirements call for the program to only be able to work with a single 
+address book at a time; therefore, if the user chooses the New or Open menu option, 
+any current address book will be closed before creating/opening a new one.  A later
+extension might allow for multiple address books to be open, each with its own
+window which can be closed separately, with closing the last open window resulting
+in terminating the program.  In this case, New and Open will result in creating
+a new window, without affecting the current window.
+</p>
+
+<p>
+The program will keep track of whether any changes have been made to an address book
+since it was last saved, and will offer the user the opportunity to save changes
+when an address book is closed either explicitly or as a result of choosing
+to create/open another or to quit the program.
+</p>
+
+<p>
+The program will keep track of the file that the current address book was
+read from or most recently saved to, will display the file's name as the title of the
+main window, and will use that file when executing the Save option.  When a
+New address book is initially created, its window will be titled "Untitled", and
+a Save operation will be converted to Save As ... - i.e. the user will be required
+to specify a file.
+</p>
+
+<hr />
+
+<h3>User Interface</h3>
+
+<p>
+Because this is to be a "standard GUI" style application, some attention needs to be
+given to the user interface at this point. A user interface like the following might
+be adopted.  Not shown in the screen shot is a File menu with New, Open, Close, Save, 
+Save&nbsp;As&nbsp;..., Print, and Quit options.  For the "Edit" and "Delete" buttons, 
+the user must first select a person in the scrolling list of names, and then can
+click the appropriate button to edit/delete that person.
+</p>
+
+<p class="diagram">
+<img src="Images/GUI.png" alt="[ Picture of GUI ]" />
+</p>
+
+<hr />
+
+<p class="navigation">
+<a href="Intro.html"><img src="Images/Back.gif" alt="Link to previous page" /></a>
+<a href="UseCases.html"><img src="Images/Next.gif" alt="Link to next page" /></a>
+</p>
+
+
+<p>
+<a href="Links.html">Page of links for non frames-enabled browsers.</a>
+</p>
+
+
+<p>
+<a href="http://validator.w3.org/check/referer">
+<img class="XHTML_image"
+	src="Images/XHTML_validation_image.gif"
+	alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p>
+
+<h6>Copyright &copy; 2005 - Russell C. Bjork.  Permission for non-commercial 
+reproduction for educational use is hereby granted; all other rights are reserved.</h6>
+
+</body>
+</html>

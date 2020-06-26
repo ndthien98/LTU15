@@ -1,0 +1,458 @@
+/*  
+Theme Name: Upstart Blogger Modicus OpenMP
+Theme URI: http://www.upstartblogger.com/
+Description: Simple and clean, lightweight theme. For updates, please <a href="http://feeds.feedburner.com/UpstartBlogger">subscribe to Upstart Blogger</a>.
+Version: 0.2
+Author: Robert Ellis and modified by Richard Friedman for openmp.org
+Author URI: http://www.mysticsoftheordinary.com/
+License: Creative Commons Attribution-Share Alike 3.0 (http://creativecommons.org/licenses/by-sa/3.0/. Feel free to make any changes, but please keep a link back to Upstart Blogger in your sidebar or footer.
+*/
+
+/* @group Normalize */
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td {
+	margin: 0;
+	padding: 0;
+        font: 12px arial, helvetica, sans-serif;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-size: 100%;
+}
+
+ol,ul {
+	list-style-type: disc;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+	font-style: normal;
+	font-weight: normal;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+fieldset,img {
+	border: 0;
+}
+caption,th {
+	text-align: left;
+}
+q:before, q:after {
+	content: '';
+}
+/* @end */
+
+/* @group Structure */
+
+#homebody {
+text-align: left;
+font-size: 1.5em;
+line-height: 2.5em;
+letter-spacing: .1em;
+width: 916px;
+padding-top: 200px;
+}
+
+#wrapper {
+	font-size: 1.2em;
+	width: 100%; 
+        margin: 0 auto; max-width: 1000px; min-width: 590px; overflow: visible;
+
+	text-align: center;
+	position: relative;
+}
+
+#header {
+text-align: left;
+margin: 20px 0;
+height: 140px;
+font-size: 3em;
+font-variant: small-caps;
+}
+
+#sidebar2 h1 {
+font-size: 18pt;
+text-transform: none;
+/* line-height: 1.2em; */
+}
+
+body {
+	margin: 0 auto;
+	padding: 0;
+	background-color: #fff;
+	color: #444;
+	/* font: 62.5%/200% Arial, Helvetica, sans-serif; */
+        font: 62.5%/200% arial, helvetica, sans-serif;
+	text-align: center;
+	}
+
+
+
+/* @end */
+
+#box {
+position: static;
+padding: 10px;
+margin: 5px;
+background-color: PowderBlue;
+border: 1px solid Gold;
+width: 170px;
+}
+
+#boxhead {
+position: static;
+padding: 0px;
+margin: 5px;
+background-color: LightCyan;
+border: 1px solid Gold;
+width: 190px;
+}
+
+a:link, a:visited {
+	color: #444;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover {
+color: red;
+border-bottom: none;
+}
+
+#sidebar a {border: none; font-weight: normal;}
+
+/*
+.post li p, #sidebar2 li p {display: inline;}
+.post li a, #sidebar2 li a {font-weight: bold; color:White;}
+.post li, #sidebar2 li {display: inline;}
+*/
+
+#sidebar2 ul {padding-top: 15px;}
+
+#sidebar h2 {text-transform: uppercase;}
+
+a:link.subscribe, a:visited.subscribe {
+color: #f36a18;}
+
+a:hover.subscribe  {
+color: silver;}
+
+.description {font-size: .5em;}
+
+/* #header img {border: 0px solid #bebebe; float: left;}*/
+#header img { float: left;}
+
+#sidebar {
+text-align: left;
+position: absolute;
+top: 140px;
+/* right: 0; */
+left: 0;
+width: 200px;
+padding-bottom: 5px;
+padding-left: 0px;
+background-color: #F0F0F0;
+border: 1px solid LightBlue;
+}
+
+#sidebar2 {
+text-align: left;
+position: absolute;
+top: 140px;
+/* left: 450px; */
+/* right: 210px; */
+/* right: 10px; */
+left: 780px;
+/* width: 300px; */
+width: 200px;
+padding-bottom: 5px;
+/* padding-right: 10px; */
+margin-left: 10px;
+background-color: #F0F0F0;
+border: 1px solid LightBlue;
+}
+
+#footer {
+}
+
+
+/*
+#sidebar2 h3 {
+margin: 1.5em 0 -1em;
+font-weight: normal;
+}
+*/
+
+#sidebar h1 a{
+font-weight: bold;}
+
+p.postmetadata {
+line-height: 100%;
+ margin:  0px 0 10px 0px; 
+color: #5e5e5e;
+border-bottom: thin solid PowderBlue;
+}
+
+p {
+	font: 12px arial, helvetica, sans-serif;
+	margin: 0px 0px 0px 0px;
+	/* padding: 2px; */
+}
+
+.post {text-align: left;
+list-style-type: disc;
+margin-left: 0px;
+/* width: 336px; */
+width: 550px;
+position: absolute;
+/* left: 0px; */
+left: 210px;
+top: 140px;
+padding-left: 10px;
+padding-bottom: 5px;}
+
+.entry {
+text-align: left;
+/* width: 336px; */
+  width: 550px;   
+
+  border-left: 1px solid PowderBlue;
+  border-right: 1px solid PowderBlue;
+
+}
+
+.entry h3 a{font-weight: bold;}
+
+.entry td{padding:5px;}
+
+.pagenav {list-style-type: circle;}
+.page_item { list-style-type: circle; }
+.current_page_item { list-style-type: circle; }
+.current_page_parent { list-style-type: circle; }
+
+/* .entry p:first-child {font-weight: bold; font-size: 1.4em; padding-top: 0; color: #f5467a;}*/
+
+.entry blockquote p:first-child {font-weight: normal; color: #444; font-size: inherit;}
+
+.entry blockquote {font-weight: normal; color: #444; font-size: 1.1em; border-left: 2px solid silver; margin: 1.2em 0 1.2em 2em; padding-left: 1em;}
+
+
+.cat a:link, .cat a:visited{
+text-transform: uppercase;
+color: #f5467a;
+}
+
+.cat a:hover{
+text-transform: uppercase;
+color: silver;}
+
+.cat {text-transform: uppercase;}
+
+.entry img {
+max-width: 550px;
+padding: 2px;
+border: 1px solid silver;
+}
+
+.entry p {padding: .5em .5em .5em .5em;}  
+ 
+
+strong {font-weight: bold;}
+
+h2 {padding-top: 5px; font-size: 1.2em; font-weight:bold; 
+    padding-bottom: 5px; line-height: normal;
+   background-color: WhiteSmoke;}
+
+h3 {
+padding-top: 2px; 
+padding-bottom: 2px;
+/* text-transform: uppercase; */
+background-color: PowderBlue ;
+font-size: 1em;
+line-height: normal;
+}
+
+.navigation {
+margin: 0 0 1em;
+}
+
+.center {text-align: center;}
+
+.borderless img, img.borderless {border: none;}
+
+.imgleft {float:left;}
+
+em {font-style: italic;}
+
+/* .entry li {display: block;} */
+
+ul {padding-bottom: 1em; padding-left: 2em; list-style-type: disc;}
+
+ul.related li a{display: block;}
+ul.related li {display: inline;}
+
+ul.archive li{display: block; padding: 0 0 1em;}
+
+ul.archive p {
+display: block; padding: 0;}
+
+ul.archive {margin: 0; padding:0;}
+
+.alignleft {float: left;}
+.alignright {float: right;}
+
+/* Begin Comments*/
+
+/* Normal Bubble */
+div.bubble {
+	width: auto;
+	margin-bottom: 24px;
+}
+
+div.bubble blockquote {
+	margin: 0px;
+	padding: 10px;
+	border: 1px solid #c9c2c1;}
+
+div.bubble blockquote p {
+	margin: 0px;
+	padding: 0px;
+	line-height: 1.3em;
+}
+
+div.bubble cite {
+	position: relative;
+	margin: -7px;
+	padding: 7px 0px 10px 15px;
+	top: 5px;
+	background: transparent url('images/tip.gif') no-repeat 20px 0;
+	font-style: normal;
+	font-size: 1em;
+	display: block;
+}
+
+
+.alt {
+	margin: 0;
+	padding: 0;
+	}
+
+#commentform p {
+	padding: 5px 0;
+	font-size: 1.2em;
+	}
+
+#comment {
+
+	width: 336px;
+	height: 100px;
+	}
+.nocomments {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	}
+
+.commentmetadata {
+	margin: 0;
+	display: block;
+	}
+	
+#commentPreview {
+font-size: .8em;}
+/* End Comments */
+
+/* Share This */
+
+.sharethis {padding: 2em 0 3em;}
+
+#akst_form {margin-left: -50px;}
+
+/* End Share This */
+
+/* Begin Calendar */
+#wp-calendar {
+	empty-cells: show;
+	margin: 10px auto 0;
+	width: 125px;
+	}
+
+#wp-calendar #next a {
+	padding-right: 10px;
+	text-align: right;
+	}
+
+#wp-calendar #prev a {
+	padding-left: 10px;
+	text-align: left;
+	}
+
+#wp-calendar a {
+	display: block;
+	}
+
+#wp-calendar caption {
+	text-align: center;
+	width: 100%;
+	}
+
+#wp-calendar td {
+	padding: 3px 0;
+	text-align: center;
+	}
+
+#wp-calendar td.pad:hover { /* Doesn't work in IE */
+	background-color: #fff; }
+	
+	#wp-calendar #prev a, #wp-calendar #next a {
+	font-size: 9pt;
+	}
+
+#wp-calendar a {
+	text-decoration: none;
+	}
+
+#wp-calendar caption {
+	font: bold 1.3em "Helvetica Neue", Helvetica, Arial, Sans-Serif;;
+	text-align: center;
+	}
+
+#wp-calendar th {
+	font-style: normal;
+	text-transform: capitalize;
+	}
+
+/* End Calendar */
+
+/* Begin Search */
+
+#search_form {
+width: 15px;}
+
+.search_input {
+width: 5px;}
+
+/* End Search */
+
+/* openmp.org footer */
+#ompfooter {
+   left:0px;
+   bottom:0px;
+   width:100%;
+   position: relative;
+	margin-top: -150px; /* negative value of footer height */
+	height: 150px;
+	clear:both;
+}
+
+#ompfooter p {
+	margin: 0;
+	padding: 7px 0;
+}
+
+#ompfooter p a {
+	text-decoration: none;
+}
+
+#ompfooter p a:hover {
+	text-decoration: underline;
+}

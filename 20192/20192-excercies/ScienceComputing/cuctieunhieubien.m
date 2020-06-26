@@ -1,0 +1,1 @@
+clear;clc;fxy = @(x,y) x.^2+y.^2;f = fxy(1,2);

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"DTD/xhtml11-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+
+<title>Use Cases for a Simple Address Book</title>
+
+</head>
+
+<body>
+<h2>Use Cases for a Simple Address Book</h2>
+
+<p>
+In the following, use cases are listed in the natural order that a user would
+think of them.  In the actual File menu, items that correspond to the various
+use cases will be listed in the traditional order, which is slightly different.
+</p>
+
+<p class="clickablediagram">
+<img src="Images/./UseCases.png" usemap="#usecasesmap" alt="[ UML Use Case Diagram ]" />
+
+
+
+<map name="usecasesmap" id="usecasemap">
+<area shape="rect" coords="153,50,340,78" href="#Add"
+    alt="Add a Person Use Case"
+    title="Add a Person Use Case" />
+<area shape="rect" coords="153,92,340,120" href="#Edit"
+    alt="Edit a Person Use Case"
+    title="Edit a Person Use Case" />
+<area shape="rect" coords="153,134,340,161,142" href="#Delete"
+    alt="Delete a Person Use Case"
+    title="Delete a Person Use Case" />
+<area shape="rect" coords="153,180,340,208" href="#SortName"
+    alt="Sort Entries by Name Use Case"
+    title="Sort Entries by Name Use Case" />
+<area shape="rect" coords="153,223,340,251" href="#SortZIP"
+    alt="Sort Entries by ZIP Use Case"
+    title="Sort Entries by ZIP Use Case" />
+<area shape="rect" coords="153,265,340,293" href="#Print"
+    alt="Print Entries Use Case"
+    title="Print Entries Use Case" />
+<area shape="rect" coords="153,307,340,335" href="#New" 			
+    alt="Create New Address Book Use Case" 
+    title="Create New Address Book Use Case" />
+<area shape="rect" coords="153,349,340,377" href="#Open"
+    alt="Open Existing Address Book Use Case"
+    title="Open Existing Address Book Use Case" />
+<area shape="rect" coords="153,391,340,419" href="#Save"
+    alt="Save Address Book Use Case"
+    title="Save Address Book Use Case" />
+<area shape="rect" coords="153,433,340,461" href="#SaveAs"
+    alt="Save Address Book As Use Case"
+    title="Save Address Book As Use Case" />
+<area shape="rect" coords="153,475,266,503" href="#Quit"
+    alt="Quit Program Use Case"
+    title="Quit Program Use Case" />
+<area shape="rect" coords="400,365,557,393" href="#SaveChanges"
+    alt="Offer to Save Changes Extension"
+    title="Offer to Save Changes Extension" />
+
+</map>
+
+</p>
+
+<h4>
+(Click on a use case above to go to the flow of events for that use case)
+</h4>
+
+<hr />
+
+<h3>Flows of Events for Individual Use Cases</h3>
+
+
+<div>
+
+
+<a name="Add" />
+<hr />
+
+<h4>Add a Person Use Case</h4>
+
+<p>
+The Add a Person use case is initiated when the user clicks the "Add" button in the main window.  
+A dialog box appears, with title "New Person", containing fields for the user to fill in the
+new person's first and last names and other information. The box can be dismissed by clicking 
+either "OK" or "Cancel".  If the "OK" button is clicked, a new person is added to the end of the
+address book, and the person's name is added to the end of the list of names in the main window.
+If the "Cancel" button is clicked, no changes are made either to the address book or to the main window.
+</p>
+
+<p>
+<a href="Sequences.html#Add">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+
+<a name="Edit" />
+<hr />
+
+<h4>Edit a Person Use Case</h4>
+
+<p>
+The Edit a Person use case is initiated when the user either highlights a name in the list of names 
+in the main window and then clicks the "Edit" button, or the user double-clicks a name.  In either 
+case, a dialog box, with title "Edit person's name", appears containing current information about 
+the person selected, (except the person's name, which appears only in the title).   The user can 
+then edit the individual fields.  The box can be dismissed by clicking either "OK" or "Cancel".  
+If the "OK" button is clicked, the entry in the address book for the selected person is updated to 
+reflect any changes made by the user.  If the "Cancel" button is clicked, no changes are made to the 
+address book.
+</p>
+
+<p>
+<a href="Sequences.html#Edit">[ Sequence Diagram ]</a>
+</p>
+
+
+
+<a name="Delete" />
+<hr />
+
+<h4>Delete a Person Use Case</h4>
+
+<p>
+The Delete a Person use case is initiated when the user highlights a name in the list of names
+in the main window and then clicks the "Delete" button.   A dialog box appears, asking the user 
+to confirm deleting this particular individual.  The box can be dismissed by clicking either "OK" 
+or "Cancel".  If the "OK" button is clicked, the entry in the address book for the selected person
+is deleted, and the person's name is deleted from the list of names in the main window.  If the
+"Cancel" button is clicked, no changes are made either to the address book or to the main window.
+</p>
+
+<p>
+<a href="Sequences.html#Delete">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+<a name="SortName" />
+<hr />
+
+<h4>Sort Entries by Name Use Case</h4>
+
+<p>
+The Sort Entries by Name use case is initiated when the user clicks the Sort by Name button in 
+the main window.  The entries in the address book are sorted alphabetically by name, and the list 
+in the main window is updated to reflect this order as well.
+</p>
+
+<p>
+<a href="Sequences.html#SortName">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+<a name="SortZIP" />
+<hr />
+
+<h4>Sort Entries by ZIP Use Case</h4>
+
+<p>
+The Sort Entries by ZIP use case is initiated when the user clicks the Sort by ZIP button in the 
+main window.  The entries in the address book are sorted by zip code, and the list in the main 
+window is updated to reflect this order as well.
+</p>
+
+<p>
+<a href="Sequences.html#SortZIP">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+<a name="Print" />
+<hr />
+
+<h4>Print Entries Use Case</h4>
+
+<p>
+The Print Entries use case is initiated when the user chooses "Print" from the File menu. 
+A save file dialog is displayed, and the user is allowed to choose a file to print the labels to.  
+(If the user cancels the file dialog, the Print operation is canceled.)  The current contents of 
+the address book are written out to the specified file (in their current order) in "mailing label"
+format.  No information maintained by the program is changed.
+</p>
+
+<p>
+<a href="Sequences.html#Print">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+<a name="New" />
+<hr />
+
+<h4>Create New Address Book Use Case</h4>
+
+<p>
+The Create a New Address Book use case is initiated when the user chooses "New" from the File menu.
+If the current address book contents have been changed since the last successful New, Open, Save, 
+or Save&nbsp;As&nbsp;... operation was done, the Offer to Save Changes extension is executed.  
+Unless the user cancels the operation, a new empty address book is then created and replaces the
+current address book.  This results in the list of names in the main window being  cleared, 
+the current file becoming undefined, and the title of the main window becomes "Untitled".  
+(NOTE: These conditions will also be in effect when the program initially starts up.)
+</p>
+
+<p>
+<a href="Sequences.html#New">[ Sequence Diagram ]</a>
+</p>
+
+
+<a name="Open" />
+<hr />
+
+<h4>Open Existing Address Book Use Case</h4>
+
+<p>
+The Open Existing Address Book use case is initiated when the user chooses "Open" from the File menu.  
+If the current address book contents have been changed since the last successful New, Open, Save,
+or Save&nbsp;As&nbsp;... operation was done, the Offer to Save Changes extension is executed.  
+Unless the user cancels the operation, a load file dialog is displayed and the user is allowed 
+to choose a file to open.   Once the user chooses a file, the current address book is replaced by the result 
+of reading in the specified address book.   This results in the list of names in the main window 
+being replaced by the names in the address book that was read, the file that was opened 
+becoming the current file, and its name being displayed as the title of the main window.  
+(If the user cancels the file dialog, or attempting to read the file results in an error, the 
+current address book is left unchanged.  If the cancellation results from an error reading
+the file, a dialog box is displayed warning the user of the error.)
+</p>
+
+<p>
+<a href="Sequences.html#Open">[ Sequence Diagram ]</a>
+</p>
+
+ 
+
+
+<a name="Save" />
+<hr />
+
+<h4>Save Address Book Use Case</h4>
+
+<p>
+The Save Address Book use case is initiated when the user chooses "Save" from the File menu. 
+(The Save option is grayed out unless changes have been made to the address book since the 
+last New, Open, Save, or Save&nbsp;As&nbsp;... operation was done.)  If there is a current file, the current 
+address book is saved to this file.   (If attempting to write the file results in an error, a 
+dialog box is displayed warning the user of the error.)  If there is no current file, the 
+Save Address Book As .. use case is done instead.  In all cases, the current address book and 
+window list are left unchanged.
+</p>
+
+<p>
+<a href="Sequences.html#Save">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+<a name="SaveAs" />
+<hr />
+
+<h4>Save Address Book As ... Use Case</h4>
+
+<p>
+The Save Address Book As ... use case is initiated when the user chooses "Save&nbsp;As&nbsp;..."  from the File 
+menu.  (The Save&nbsp;As&nbsp;... option is always available.)  A save file dialog is displayed and the user 
+is allowed to choose the name of a file in which to save the address book.  (If the user cancels 
+the file dialog, the Save&nbsp;As&nbsp;... operation is canceled.)     The current address book is saved to 
+the specified file, and the file to which it was saved becomes the current file and its name is 
+displayed as the title of the main window.   (If attempting to write the file results in an error, 
+a dialog box is displayed warning the user of the error, and the current file and main window title
+are unchanged.)  In all cases, the current address book and window list are left unchanged.
+</p>
+
+<p>
+<a href="Sequences.html#SaveAs">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+
+<a name="Quit" />
+<hr />
+
+<h4>Quit Program Use Case</h4>
+
+<p>
+The Quit Program use case is initiated when the user chooses "Quit" from the File menu, or clicks
+the close box for the main window.  In either case, if the current address book contents have
+been changed since the last New, Open, Save, or Save&nbsp;As&nbsp;... operation was done, the 
+Offer to Save Changes extension is executed.   Unless the user cancels the operation, the
+program is terminated.
+</p>
+
+<p>
+<a href="Sequences.html#Quit">[ Sequence Diagram ]</a>
+</p>
+
+
+
+
+
+
+<a name="SaveChanges" />
+<hr />
+
+<h4>Offer to Save Changes Extension</h4>
+
+<p>
+The Offer to Save Changes extension is initiated from within the Create New Address Book, Open Existing
+Address Book, or Quit program use cases, if the current address book has been changed since the last successful
+New, Open, Save, or Save&nbsp;As&nbsp;... operation was done.  A dialog box is displayed, informing the user
+that there are unsaved changes, and asking the user whether to save changes, not save changes, or 
+cancel the operation.  If the user chooses to save changes, the Save Address Book Use Case is executed
+(which may result in executing the Save Address Book As ... Use Case if there is no current file). 
+If the user chooses not to save changes, the original operation is simply resumed.  If the user chooses
+to cancel (or cancels the save file dialog if one is needed), the original operation is canceled. 
+</p>
+
+<p>
+<a href="Sequences.html#SaveChanges">[ Sequence Diagram ]</a>
+</p>
+
+
+<hr />
+</div>
+
+<p class="navigation">
+<a href="Requirements.html"><img src="Images/Back.gif" alt="Link to previous page" /></a>
+<a href="Analysis.html"><img src="Images/Next.gif" alt="Link to next page" /></a>
+</p>
+
+<p>
+<a href="Links.html">Page of links for non frames-enabled browsers.</a>
+</p>
+
+
+<p>
+<a href="http://validator.w3.org/check/referer">
+<img class="XHTML_image"
+	src="Images/XHTML_validation_image.gif"
+	alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p>
+
+<h6>Copyright &copy; 2005 - Russell C. Bjork.  Permission for non-commercial 
+reproduction for educational use is hereby granted; all other rights are reserved.</h6>
+
+</body>
+</html>

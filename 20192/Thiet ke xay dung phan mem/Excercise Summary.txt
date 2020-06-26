@@ -1,0 +1,14 @@
+2 Use case, với mỗi use case
+- Nằm ở đâu trong biểu đồ use case (tác nhân là gì)
+- Biểu đồ hoạt động
+- Đặc tả (các luồng)
+
+- Biểu đồ interaction (cho lớp phân tích)
+- Biểu đồ lớp phân tích
+
+- Giao diện (Sơ đồ chuyển đổi màn hình, đặc tả từng màn hình)
+
+- Biểu đồ interaction (cho lớp thiết kế)
+- Biểu đồ lớp thiết kế
+
+- Lập trình

@@ -1,0 +1,74 @@
+- Lý thuyết:
+	- Tìm hiểu khái niệm tấn công DoS/DDoS:
+
+	- Tìm hiệu một số kỹ thuật tấn công DoS trong mạng: 
+		- Ping of Death
+		- Teardrop
+		- TCP SYN Flood
+		- DNS Amplification Attack
+	- Tìm hiểu các cách thức phòng chống những kỹ thuật tấn công trên
+		- Ping of Death
+		- Teardrop
+		- TCP SYN Flood
+		- DNS Amplification Attack
+Thực hành:
+	- Thử nghiệm và phân tích đặc điểm của các kỹ thuật tấn công
+	- Thử nghiệm một số cách thức phòng chống các kỹ thuật tấn công
+
+
+Danh sách tài liệu tham khảo:
+1. 
+	Tên file: 	DoS Definition and Classification.pdf 
+	Nguồn gốc: 	http://www.njamha.org/it/resources/XAHIVEFactsheetCyberAttacksDDOS.pdf
+	Trang: 		1-4
+2. 	
+	Tên file: 	DDoS Definition and Classification.pdf
+	Nguồn gốc: 	http://www.njamha.org/it/resources/XAHIVEFactsheetCyberAttacksDDOS.pdf
+	Trang: 		1-5
+3. 
+	Tên file: 	comparitech_com_net_admin_dos_vs_ddos_attacks_differences_prevention.pdf
+	Nguồn gốc: 	https://www.comparitech.com/net-admin/dos-vs-ddos-attacks-differences-prevention/
+	Trang: 		1-12
+4.
+	Tên file: 	Hacking- The Art of Exploitation (2nd ed. 2008) - Erickson
+	Nguồn gốc: 	https://repo.zenk-security.com/Magazine%20E-book/Hacking-%20The%20Art%20of%20Exploitation%20(2nd%20ed.%202008)%20-%20Erickson.pdf
+	Trang: 		251-278
+5.
+	Tên file: 	Denial of Service Attack Techniques- Analysis, Implementation and Comparison.pdf
+	Nguồn gốc: 	http://www.iiisci.org/Journal/CV$/sci/pdfs/P129065.pdf
+	Trang: 		1-6
+
+"1. www-noction-com-blog-ddos-amplification-attacks-fbclid-IwAR2yzthEEECxB2Pf333XOeiY2oZhUxsTe_Teyt-woSMyr1jbNFDf6YYGYMk.pdf
+10 trang 
+
+2.  Classification of DDoS Attacks and their Defense Techniques using Intrusion Prevention System.pdf
+8 trang 
+
+3. DNS_Amplification_Attack_Revisited.pdf
+17 trang 
+
+4. Survey of Network-Based Defense Mechanisms Countering the DoS and DDoS Problems.pdf
+42 trang 
+
+1. DoS Definition and Classification.pdf 
+	Trang: 		1-4
+2.DDoS Definition and Classification.pdf
+	Trang: 		1-5
+3. comparitech_com_net_admin_dos_vs_ddos_attacks_differences_prevention.pdf
+	Nguồn gốc: 	https://www.comparitech.com/net-admin/dos-vs-ddos-attacks-differences-prevention/
+	Trang: 		1-12
+4.Hacking- The Art of Exploitation (2nd ed. 2008) - Erickson
+	Trang: 		251-278
+5.Denial of Service Attack Techniques- Analysis, Implementation and Comparison.pdf
+	Trang: 		1-6
+1. www-noction-com-blog-ddos-amplification-attacks-fbclid-IwAR2yzthEEECxB2Pf333XOeiY2oZhUxsTe_Teyt-woSMyr1jbNFDf6YYGYMk.pdf
+10 trang 
+
+2.  Classification of DDoS Attacks and their Defense Techniques using Intrusion Prevention System.pdf
+8 trang 
+
+3. DNS_Amplification_Attack_Revisited.pdf
+17 trang 
+
+4. Survey of Network-Based Defense Mechanisms Countering the DoS and DDoS Problems.pdf
+42 trang "														

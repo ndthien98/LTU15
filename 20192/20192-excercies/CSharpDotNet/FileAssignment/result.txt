@@ -1,0 +1,8 @@
+Word: nguyen                         	-	Repeat: 8
+Word: 20168806                       	-	Repeat: 7
+Word: thien                          	-	Repeat: 7
+Word: duc                            	-	Repeat: 7
+Word: <3                             	-	Repeat: 2
+Word: hong                           	-	Repeat: 1
+Word: thu                            	-	Repeat: 1
+Word: thi                            	-	Repeat: 1

@@ -1,0 +1,7 @@
+c:\temp\String Sample 3\String Sample 3\bin\Debug\String Sample 3.exe.config
+c:\temp\String Sample 3\String Sample 3\bin\Debug\String Sample 3.exe
+c:\temp\String Sample 3\String Sample 3\bin\Debug\String Sample 3.pdb
+c:\temp\String Sample 3\String Sample 3\obj\Debug\String Sample 3.csprojAssemblyReference.cache
+c:\temp\String Sample 3\String Sample 3\obj\Debug\String Sample 3.csproj.CoreCompileInputs.cache
+c:\temp\String Sample 3\String Sample 3\obj\Debug\String Sample 3.exe
+c:\temp\String Sample 3\String Sample 3\obj\Debug\String Sample 3.pdb

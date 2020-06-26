@@ -1,0 +1,7 @@
+C:\Temp\String - Example 1\String - Example 1\bin\Debug\String - Example 1.exe.config
+C:\Temp\String - Example 1\String - Example 1\bin\Debug\String - Example 1.exe
+C:\Temp\String - Example 1\String - Example 1\bin\Debug\String - Example 1.pdb
+C:\Temp\String - Example 1\String - Example 1\obj\Debug\String - Example 1.csprojAssemblyReference.cache
+C:\Temp\String - Example 1\String - Example 1\obj\Debug\String - Example 1.csproj.CoreCompileInputs.cache
+C:\Temp\String - Example 1\String - Example 1\obj\Debug\String - Example 1.exe
+C:\Temp\String - Example 1\String - Example 1\obj\Debug\String - Example 1.pdb

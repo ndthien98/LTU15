@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"DTD/xhtml11-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+<meta name="keywords" content="object-oriented, analysis, design, UML, java" /> 
+<title>Maintenance</title>
+
+</head>
+
+<body>
+
+<h2>Maintenance</h2>
+
+<div>
+
+<p>
+This page lists various changes that might be made to the system.  Modifying the
+various documents to incorporate one or more of these changes would make an
+interesting exercise for the reader.  They are listed in order of estimated
+increasing difficulty.
+</p>
+
+
+
+<ul>
+<li>The Print Entries Use Case currently sends printed output to System.out.
+	Alternately, it could send its output to a file, chosen by the user in
+	response to a file dialog.<br />&nbsp;
+</li>
+<li>It was noted in the orginal requirements that the program might be modified
+	to allow multiple address books to be open at the same time - each in its
+	own window.  This might entail the following changes:<br />&nbsp;
+	<ul>
+		<li>The Create New Address Book and Open Existing Address Book Use Cases
+			would no longer close the current address book.  Instead, they
+			would create a new copy of the GUI, with its own address book
+			(either a newly created, empty one, or one read from a file
+			specified by the user.) There would thus be two (or more) windows
+			visible on the screen.<br />&nbsp;
+		</li>
+		<li>A new Close Address Book Use Case would be added to allow the
+			user to close a single window (and its associated address book).
+			This could be initiated by a new Close option in the File menu,
+			or by clicking the close box for the window.
+			It would offer to save changes, if necessary, and then close
+			the window.  If the window that is closed is the last open
+			window in the program, then the program should be terminated as
+			well; otherwise, the program would continue running
+			with the remaining window(s) visible.<br />&nbsp;
+		</li>
+		<li>The code that is activated when the close box for the window
+			is clicked would be the Close Address Book Use Case described
+			above, instead of the Quit Program Use Case.<br />&nbsp;
+		</li>
+		<li>The Quit Program Use Case (activated from the Quit item in the
+			File menu) would need to cause all open windows
+			to be closed, with appropriate offers to save changes, unless
+			the user cancels the operation for any window.
+			If the user cancels the save for any window, the entire use
+			case would terminate at once, without attempting to close
+			additional windows.<br />&nbsp;
+		</li>
+	</ul>
+</li>
+<li>A facility might be created that would allow the user to search
+	for the occurrence of some character string anywhere in the information
+	about a person.  For example, searching for the string "Buffalo" might
+	find Boris Buffalo or a person living in Buffalo, NY; searching for the
+	string "0191" might find a person living in ZIP code 01915 or a person
+	whose phone number is 555-0191, etc. This might entail adding two new 
+	use cases: Find and Find Again. <br />&nbsp;
+	<ul>
+		<li>The Find Use Case could pop up a dialog asking the user
+			to enter a character string, and would then search through
+			all the people in the address book (starting at the
+			beginning) until a person is found for which the string
+			occurs anywhere in the stored information (in either name,
+			in the address, etc.)  This person would then be selected
+			in the displayed list of  names.<br />&nbsp;
+		</li>
+		<li>The Find Again Use Case could look for the next
+			occurrence of the same string, beginning where the
+			previous Find/Find Again left off.  <br />&nbsp;<br />
+			
+			Of course, this option would not be available when a search
+			is not in progress - e.g. when an address book is newly created
+			or opened, or when the previous Find/Find Again did not find
+			anyone.  It would also be reasonable to disable this option when any
+			change is made to the address book (e.g. by Add, Edit, Delete, or
+			a Sort).<br />&nbsp;
+		</li>
+	</ul>
+	To allow these two new use cases to be initiated, a new Search menu could
+	be added with two choices, perhaps labelled Find and Find Again.  In this 
+	case, Find Again would be grayed out when the Find Again Use Case is not
+	available; and Find might also be grayed out when the address book is 
+	totally empty.
+</li>
+</ul>
+
+<p>
+Some good practice in working with UML might come by modifying the various design
+documents (beginning with the use cases), not just changing the code.
+</p>
+
+</div>
+
+<p class="navigation">
+<a href="Executable.html"><img src="Images/Back.gif" alt="Link to previous page" /></a>
+</p>
+
+<p>
+<a href="Links.html">Page of links for non frames-enabled browsers.</a>
+</p>
+
+<p>
+<a href="http://validator.w3.org/check/referer">
+<img class="XHTML_image"
+	src="Images/XHTML_validation_image.gif"
+	alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p>
+  
+<h6>Copyright &copy; 2005 - Russell C. Bjork.  Permission for non-commercial 
+reproduction for educational use is hereby granted; all other rights are reserved.</h6>
+
+</body>
+</html>

@@ -1,0 +1,2 @@
+% code của thiên clear;clc;fx = @(x) (x+4).*(x+1).*(x-2)/4;fplot(fx,[-5 3]);hold on;function [minx minf] = cuc_tieu(f, a, b, e)  while 1+1==2    x1 = a + (b-a)./2 - e/2;    x2 = a + (b-a)/2 + e/2;    f1 = f(x1);    f2 = f(x2);    if f1<f2      b = x2;    elseif f1>f2      a = x1;    elseif f1==f2      a = x1;      b = x2;    endif;        if abs(a-b)<2.*e      minf = f(x1);      minx = x1;      break;    endif;  endwhile;  
+endfunction;[minx minf] = cuc_tieu(fx,-5,3,0.000001);plot(minx,minf,'ro');minxminf

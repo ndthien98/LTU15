@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"DTD/xhtml11-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+<style type="text/css"> P.statechart { text-align: center; } </style>
+
+<title>Class Diagram for the Address Book Example</title>
+
+</head>
+
+<body>
+
+<h2>Class Diagram for the Address Book Example</h2>
+
+<p>
+Shown below is the class diagram for the Address Book Example.  To prevent the diagram from
+becoming overly large, only the name of each class is shown - the attribute and
+behavior "compartments" are shown in the detailed design, but are omitted here.
+</p>
+
+<p>
+The diagram includes the classes discovered during analysis, plus
+some additional classes discovered during design.  (In a more significant system, 
+the total number of classes may be about five times as great as the number
+of classes uncovered during analysis.)
+</p>
+
+<ul>
+<li>AddressBookApplication - main class for the application; responsible for
+	creating the FileSystem and GUI objects and starting up the application.
+</li>
+<li>MultiInputPane - a utility class for reading multiple values at a single
+	time.  (Design not further documented, but javadoc is included.)
+</li>
+<li>Person.CompareByName - Comparator for comparing two Person objects by
+	name (used for sorting by name).
+</li>
+<li>Person.CompareByZip - Comparator for comparing two Person objects by
+	zip (used for sorting by name).
+</li>
+</ul>
+
+<p>
+The following relationships hold between the objects:
+</p>
+
+<ul>
+<li>The main application object is responsible for creating a single file system
+	object and a single controller object.</li>
+<li>The file system object is responsible for saving and re-loading address books</li>
+<li>The controller object is responsible for creating a single GUI object.</li>
+<li>The controller object is responsible for initially creating an address book
+	object, but the GUI is henceforth responsible for keeping track of its
+	current address book - of which it only has one at any time.</li>
+<li>The GUI object and the address object are related by an observer-observable
+	relationship, so that changes to the address book content lead to
+	corresponding changes in the display</li> 
+<li>The address book object is responsible for creating and keeping track of
+	person objects, of which there can be many in any given address book.</li>
+<li>A MultiInputPane object is used by the controller to allow the user to
+	enter multiple items of data about a person.</li>
+<li>A comparator object of the appropriate kind is used by the address book
+	object when sorting itself.</li>
+</ul>
+
+<hr />
+
+<h4>
+Click on a class icon for links to further information about it
+</h4>
+
+<p class="clickablediagram">
+<img src="Images/ClassDiagram.png" usemap="#ClassDiagramMap" alt="[ Class Diagram ]" />
+
+<map name="ClassDiagramMap" id="ClassDiagramMap">
+<area shape="rect" coords="25 10 100 55" href="ClassLinks.html#AddressBookApplication" 
+    alt="Class AddressBookApplication" 
+    title="Class AddressBookApplication" />
+<area shape="rect" coords="55 105 130 155" href="ClassLinks.html#AddressBookController" 
+    alt="Class AddressBookController" 
+    title="Class AddressBookController" />
+<area shape="rect" coords="180 105 255 155" href="ClassLinks.html#MultiInputPane" 
+    alt="Class MultiInputPane" 
+    title="Class MultiInputPane" />
+<area shape="rect" coords="10 205 85 255" href="ClassLinks.html#FileSystem" 
+    alt="Class FileSystem" 
+    title="Class FileSystem" />
+<area shape="rect" coords="110 205 185 255" href="ClassLinks.html#AddressBookGUI" 
+    alt="Class AddressBookGUI" 
+    title="Class AddressBookGUI" />
+<area shape="rect" coords="80 300 155 350" href="ClassLinks.html#AddressBook" 
+    alt="Class AddressBook" 
+    title="Class AddressBook" />
+<area shape="rect" coords="210 260 285 310" href="ClassLinks.html#Person.CompareByName" 
+    alt="Class Person.CompareByName" 
+    title="Class Person.CompareByName" />
+<area shape="rect" coords="210 325 285 375" href="ClassLinks.html#Person.CompareByZip" 
+    alt="Class Person.CompareByZip" 
+    title="Class Person.CompareByZip" />
+
+
+<area shape="rect" coords="80 395 155 445" href="ClassLinks.html#Person" 
+    alt="Class Person" 
+    title="Class Person" />
+
+
+</map>
+</p>
+
+<hr />
+
+<p class="navigation">
+<a href="Sequences.html"><img src="Images/Back.gif" alt="Link to previous page" /></a>
+<a href="ClassDesign.html"><img src="Images/Next.gif" alt="Link to next page" /></a>
+</p>
+
+<p>
+<a href="Links.html">Page of links for non frames-enabled browsers.</a>
+</p>
+
+
+<p>
+<a href="http://validator.w3.org/check/referer">
+<img class="XHTML_image"
+	src="Images/XHTML_validation_image.gif"
+	alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p>
+
+<h6>Copyright &copy; 2005 - Russell C. Bjork.  Permission for non-commercial 
+reproduction for educational use is hereby granted; all other rights are reserved.</h6>
+
+</body>
+</html>

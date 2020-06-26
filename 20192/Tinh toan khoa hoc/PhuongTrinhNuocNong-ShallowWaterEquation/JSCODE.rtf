@@ -1,0 +1,1292 @@
+{\rtf1\ansi\deff0{\fonttbl{\f0\fnil\fcharset0 Courier New;}}
+{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard\lang1033\f0\fs22       PROGRAM FE2DY\par
+c\par
+      PARAMETER ( L = 8, LCOL = 3 )\par
+      COMMON / COMGAU /\par
+     I WCOL (LCOL), XCOL (LCOL)\par
+     I, EMU (LCOL), EMUP1 (LCOL)\par
+c\par
+      COMMON /DYNVAR/\par
+     I U(L,L), H(L,L), V(L,L),\par
+     I UT(L,L), HT(L,L), VT(L,L),\par
+     I U1(L,L), H1(L,L), V1(L,L),\par
+     I X(L), DX, F\par
+c\par
+      COMMON/DYI /\par
+     I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+     I , VX (L, LCOL, L, LCOL)\par
+     I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+     I , VY (L, LCOL, L, LCOL)\par
+     I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+     I , VC (L, LCOL, L, LCOL)\par
+     I ,UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+     I , VTC (L, LCOL, L, LCOL)\par
+c\par
+      COMMON /YIPO/\par
+     I HCC(L,L, LCOL) ,HCCY(L,L, LCOL)\par
+     I,UCC (L, L, LCOL) ,UCCY (L, L, LCOL)\par
+     I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+     I, HTCC (L, L, LCOL)\par
+     I, UTCC (L, L, LCOL)\par
+     I, VTCC (L, L, LCOL)\par
+c       GAUSS IAN WEIGHTS\par
+c\tab POLYNOMIALS UP TO DEGREE 5\par
+\par
+      XCOL(1)=-.77459 66692 41483\par
+      XCOL(2) = 0.\par
+      XCOL(3) = .77459 66692 41483\par
+      WCOL(1) = .55555 55555 55555\par
+      WCOL(2) = .88888 88888 88889\par
+      WCOL(3) = .55555 55555 55555\par
+\par
+c      SET UP INITIAL VALUES\par
+\par
+      H0=20000.\par
+      H11=4400.\par
+      H2=2660.\par
+      XL=4400000.\par
+      XD=4400000.\par
+      DH=1500.\par
+      F=.0001\par
+      DX=400000.*11./7.\par
+      DT=900.\par
+      EPS=1./10000.\par
+      DO 40 IX=1,L\par
+      DO 40 IY=1,L\par
+      U (IX, IY)=0.\par
+      V (IX, IY) =0.\par
+      FAK=0.\par
+      IIY=IY\par
+      ARG=9.* (IIY*DX-6*DX) / (2. *XD)\par
+      H (IX, IY) =H0+H11*TANH (ARG)\par
+     I +H2* (1./COSH (9.* ((IY-6) *DX/XD) ) ) **2\par
+     I * (SIN (2. *3 .1415*IX*DX/XL) )\par
+      U1 (IX, IY) =U (IX, IY)\par
+      V1 (IX, IY) =V (IX, IY)\par
+      H1 (IX, IY) =H (IX, IY)\par
+40    CONTINUE\par
+\par
+      DO 41 IX=1,L\par
+      DO 41 IY=2,L-I\par
+      IXP=IX+1\par
+      IXM=IX-1\par
+      IF (IXP. EQ. L+1) IXP=2\par
+      IF (IXM. EQ. -1) IXM=L-1\par
+      U (IX, IY) =- (H (IX, IY+1) -H (IX, IY-1) ) / (F*DX*2.)\par
+      V(IX, IY)= (H(IXP,IY)-H(IXM, IY))/(F*DX*2.)\par
+      U1 (IX, IY) =U (IX, IY)\par
+      V1 (IX, IY) =V (IX, IY)\par
+      H1 (IX, IY) =H (IX, IY)\par
+41    CONTINUE\par
+\par
+c\tab TRANSFORM X-DIRECTION\par
+\par
+      CALL PRF(H)\par
+      DO 60 ICOL=1,LCOL\par
+      EMU(ICOL)=(1.-XCOL(ICOL))/2.\par
+      EMUP1(ICOL)=(XCOL(ICOL)+1.)/2.\par
+60    CONTINUE\par
+\par
+c\tab TIME STEPPING\par
+\par
+      DT2=DT\par
+      NE=25000\par
+      DO 100 N=1,NE\par
+      CALL TEND\par
+      CALL ENER(E,Z,HM, EKIN)\par
+\par
+c      STORE INTEGRAL CONSTRAINTS FOR INITIAL TIME\par
+\par
+      IF(N.EQ.1)EE=E\par
+      IF(N.EQ.1)ZZ=Z\par
+      IF(N.EQ.1)HMM=HM\par
+      E=E/EE\par
+      Z=Z/ZZ\par
+      HM=HM/HMM\par
+      EKIN=EKIN/EE\par
+      PRINT 89,N,E,EKIN,Z,HM\par
+89    FORMAT(' N,E=',I10,4F15.8)\par
+      DO 91 IX=1,L\par
+      DO 91 IY=1,L\par
+      U1(IX, IY)=U1(IX, IY)+DT2*UT(IX, IY)\par
+      V1(IX, IY)=V1(IX, IY)+DT2*VT(IX, IY)\par
+91    H1(IX, IY)=H1(IX, IY)+DT2*HT(IX, IY)\par
+      DT2=2.*DT\par
+\par
+c      EXCHANGE TIME LEVELS\par
+\par
+      DO 94 IX=1,L\par
+      DO 94 IY=1,L\par
+      UU=U (IX, IY)\par
+      U (IX, IY) = U1 (IX, IY)\par
+      U1 (IX, IY)= UU\par
+      VV=V (IX, IY)\par
+      V (IX, IY) = V1 (IX, IY)\par
+      V1 (IX, IY)= VV\par
+      HH=H (IX, IY)\par
+      H (IX, IY) =H1 (IX, IY)\par
+94    H1 (IX, IY) =HH\par
+      CALL DIFF (EPS)\par
+100   CONTINUE\par
+      STOP\par
+      END\par
+\par
+\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C DIFF DOES A DIFFUSION STEP ON THE FIELDS C\par
+      C U,V AND H C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETER C\par
+      C C\par
+      C EPS -DIFFUSION PARAMETER C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE DIFF (EPS)\par
+      PARAMETER (L=8, LCOL=3)\par
+      COMMON / COMGAU /\par
+      I WCOL (LCOL), XCOL (LCOL)\par
+      I, EMU (LCOL) , EMUP 1 (LCOL)\par
+      C\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL), HX (L, LCOL, L, LCOL)\par
+      I , VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I , VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I ,VC (L, LCOL, L, LCOL)\par
+      I ,UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I , VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC(L,L, LCOL) ,HCCY(L,L, LCOL)\par
+      I, UCC ( L, L, LCOL), UCCY ( L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      DO 10 IX=I,L\par
+      DO I0 IY=2,L-I\par
+      IXP=IX+I\par
+      IXM=IX-I\par
+      IF (IX.EQ. L) IXP=2\par
+      IF (IX. EQ. I) IXM=L-I\par
+      U (IX, IY) =U (IX, IY) +EPS*\par
+      I (-4 .*U (IX, IY) +UI (IXP, IY)\par
+      I +UI (IXM, IY) +Ul (IX, IY+I) +UI (IX, IY-I) )\par
+      V (IX, IY) =V (IX, IY) +EPS*\par
+      I (-4. *V (IX, IY) +Vl (IXP, IY)\par
+      I +Vl (IXM, IY) +VI (IX, IY+I) +Vl (IX, IY-I) )\par
+      H (IX, IY) =H (IX, IY) +EPS*\par
+      I (-4. *H (IX, IY) +HI (IXP, IY)\par
+      I +HI (IXM, IY) +HI (IX, IY+I) +HI (IX, IY-I) )\par
+      I0 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C PRF PRINTS TWO DIMENSIONAL FIELDS C\par
+      C C\par
+      C C\par
+      C C\par
+      C PARAMETER C\par
+      C C\par
+      C H -FIELD TO BE PRINTED C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      Solution of shallow-water equations 655\par
+      SUBROUTINE PRF (H)\par
+      PARAMETER (L-8, LCOL=3 )\par
+      DIMENSION H (L, L)\par
+      DIMENSION IH (L)\par
+      H0=20000.\par
+      DH=I500.\par
+      DO i0 IY=I,L\par
+      DO 1 IXzl, L\par
+      ZHEL = (H (IX, IY) +DH-H0) /DH\par
+      1 IH (IX) =ZHEL\par
+      PRINT2, (IH (I), I=l, L)\par
+      2 FORMAT(' ',22(' ',ii2))\par
+      10 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C ENER COMPUTES DIAGNOSTIC QUANTITIES C\par
+      C C\par
+      C C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C E -ENERGY C\par
+      C Z -POTENTIAL ENSTROPHY C\par
+      C HMS -MASS C\par
+      C EK -KINETIC ENERGY C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      i0\par
+      SUBROUTINE ENER(E,Z,HM, EK)\par
+      PARAMETER(L=8,LCOL=3)\par
+      COMMON/COMGAU/\par
+      I WCOL(LCOL),XCOL(LCOL)\par
+      I,EMU(LCOL),EMUPI(LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I Ul (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX, F\par
+      COMMON/DYI/\par
+      I UX(L, LCOL, L,LCOL),HX(L, LCOL, L, LCOL)\par
+      I , VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL), HY (L, LCOL, L, LCOL)\par
+      I ,VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I ,VC(L, LCOL, L, LCOL)\par
+      I ,UTC(L, LCOL, L, LCOL),HTC(L,LCOL, L, LCOL)\par
+      I ,VTC(L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC(L,L,LCOL),HCCY(L,L,LCOL)\par
+      I,UCC(L,L,LCOL),UCCY(L,L,LCOL)\par
+      I,VCC(L,L,LCOL),VCCY(L,L, LCOL)\par
+      I, HTCC ( L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      E=0.\par
+      HM=0.\par
+      Z=0.\par
+      EK=0.\par
+      DO i0 IX=I,L-I\par
+      DO i0 ICOL=I,LCOL\par
+      DO i0 IY=I,L-I\par
+      DO i0 ICOLI=I,LCOL\par
+      E=E+HC(IX, ICOL, IY, ICOLI)*(UC(IX, ICOL, IY, ICOLI)\par
+      I *UC(IX, ICOL, IY,ICOLI)\par
+      I +VC(IX, ICOL, IY, ICOLI)*VC(IX, ICOL, IY, ICOLI)\par
+      I +HC(IX, ICOL, IY, ICOLI))\par
+      I *DX*WCOL(ICOLI)*WCOL(ICOL)\par
+      I *.5*.5 *.5\par
+      EK=EK+HC(IX, ICOL, IY, ICOLI)*(UC(IX, ICOL, IY, ICOLI)\par
+      I *UC(IX, ICOL, IY, ICOLI)\par
+      I +VC(IX, ICOL, IY, ICOLI)*VC(IX,ICOL, IY, ICOLI)\par
+      I)\par
+      I *DX*WCOL(ICOLI)*WCOL(ICOL)\par
+      I *.5*.5 *.5\par
+      HM=HM+HC(IX, ICOL, IY, ICOLI)*DX*WCOL(ICOLI)*WCOL(ICOL) *.5*.5\par
+      XI=(VX(IX, ICOL, IY, ICOLI)-UY(IX, ICOL, IY, ICOLI)+F)\par
+      I /HC(IX, ICOL, IY, ICOLI)\par
+      Z=Z+HC(IX, ICOL, IY, ICOLI)*XI*XI\par
+      CONTINUE\par
+      RETURN\par
+      END\par
+      656 J. STEPPELER\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C TEND COMPUTES TIME DERIVATIVES FOR FIELDS C\par
+      C U,V,H AND STORES THEM ON FIELDS UT,VT,HT C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      L) ,V (L,L) ,\par
+      L),VT (L, L),\par
+      L),Vl (L,L) ,\par
+      SUBROUTINE TEND\par
+      PARAMETER (L=8, LCOL=3 )\par
+      COMMON / COMGAU /\par
+      I WCOL (LCOL), XCOL (LCOL)\par
+      I, EMU (LCOL) , EMUPI (LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,\par
+      I UT (L,L) ,HT (L,\par
+      I Ul (L,L) ,HI (L,\par
+      I X (L) ,DX, F\par
+      COMMON/DYI /\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      UX (L, LCOL, L, LCOL), HX (L, LCOL, L, LCOL)\par
+      , VX (L, LCOL, L, LCOL)\par
+      , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      ,VY (L, LCOL, L, LCOL)\par
+      , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      ,VC (L, LCOL, L, LCOL)\par
+      , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I , VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC(L,L, LCOL) ,HCCY(L,L, LCOL)\par
+      I, UCC (L, L, LCOL) , UCCY (L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC ( L, L, LCOL )\par
+      DIMENSION\par
+      I RH (L,L) ,RHC(L, LCOL, L, LCOL),\par
+      I RHCC(L,L, LCOL) ,RHY(L, LCOL, L, LCOL) ,\par
+      I RHCCY (L, L, LCOL) , RHX (L, LCOL, L, LCOL)\par
+      IPOLY INTERPOLATES IN Y.\par
+      IPOLX INTERPOLATES Y INTERPOLATED FIELDS IN X\par
+      CALL IPOLY (U, UCC, UCCY)\par
+      CALL IPOLX (UCC, UC)\par
+      CALL IPOLX (UCCY, UY)\par
+      CALL DIFX (UCC,UX)\par
+      CALL IPOLY (V,VCC,VCCY)\par
+      CALL IPOLX (VCC,VC)\par
+      CALL IPOLX (VCCY,VY)\par
+      CALL DIFX (VCC,VX)\par
+      CALL IPOLY (H, HCC, HCCY)\par
+      CALL IPOLX (HCC, HC)\par
+      CALL IPOLX (HCCY, HY)\par
+      CALL DIFX (HCC, HX)\par
+      DO 5 ICOLX=I, LCOL\par
+      DO 5 IX=I,L-I\par
+      DO 5 ICOLY=I, LCOL\par
+      DO 5 IY=I,L-I\par
+      RHC (IX, ICOLX, IY, ICOLY) =-. 5* (UC (IX, ICOLX, IY, ICOLY)\par
+      I *UC (IX, ICOLX, IY, ICOLY)\par
+      I +VC (IX, ICOLX, IY, ICOLY) *VC (IX, ICOLX, IY, ICOLY) )\par
+      I -HC (IX r ICOLX, IY, ICOLY)\par
+      CALL SCALHX (RHC, RHCC)\par
+      CALL GAUHX (RHCC)\par
+      CALL SCALHY (RHCC, RH)\par
+      CALL GAUHY (RH)\par
+      CALL IPOLY (RH, RHCC, RHCCY)\par
+      CALL IPOLX (RHCC, RHC)\par
+      CALL IPOLX (RHCCY, RHY)\par
+      CALL DIFX (RHCC, RHX)\par
+      DO 10 ICOLX=I,LCOL\par
+      DO i0 IX=I,L-I\par
+      DO i0 ICOLY=I,LCOL\par
+      DO 10 IY=I,L-I\par
+      XI=VX (IX, ICOLX, IY, ICOLY) -UY (IX, ICOLX, IY, ICOLY) +F\par
+      UTC (IX, ICOLX, IY, ICOLY) =RHX (IX, ICOLX, IY, ICOLY)\par
+      I +XI*VC (IX, ICOLX, IY, ICOLY)\par
+      VTC (IX, ICOLX, IY, ICOLY) =RHY (IX, ICOLX, IY, ICOLY)\par
+      I -XI*UC (IX, ICOLX, IY, ICOLY)\par
+      HTC (IX, ICOLX, IY, ICOLY) -\par
+      I -UC (IX, ICOLX, IY, ICOLY) *HX (IX, ICOLX, IY, ICOLY)\par
+      I -UX (IX, ICOLX, IY, ICOLY) *HC (IX, ICOLX, IY, ICOLY)\par
+      Solution of shallow-water equations 657\par
+      I -VC(IX, ICOLX, IY,ICOLY)*HY(IX,ICOLX,IY, ICOLY)\par
+      I -VY(IX,ICOLX,IY, ICOLY)*HC(IX, ICOLX, IY,ICOLY)\par
+      i0 CONTINUE\par
+      CALL SCALHX(HTC, HTCC)\par
+      CALL GAUHX(HTCC)\par
+      CALL SCALUX(UTC,UTCC)\par
+      CALL GAUUX(UTCC)\par
+      CALL SCALUX(VTC,VTCC)\par
+      CALL GAUUX(VTCC)\par
+      CALL SCALHY(HTCC,HT)\par
+      CALL GAUHY(HT)\par
+      CALL SCALUY(UTCC,UT)\par
+      CALL GAUUY(UT)\par
+      CALL SCALUY(VTCC,VT)\par
+      CALL GAUUY(VT)\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C GAUO3IN INITIALISES A GAUSS ELIMINATION C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C W -INPUT AND OUTPUT ARRAY, CONTAINING SIDE C\par
+      C BANDS OF MATRIX A. C\par
+      C WI -OUTPUT ARRAY C\par
+      C NLEV -LENGTH OF DIAGONAL C\par
+      C NBAND -NUMBER OF SIDE DIAGONALS C\par
+      C C\par
+      C STORAGE LOCATION OF W: C\par
+      C W(MID+I,J)=A(J+I,J) C\par
+      C A(J,I) -MATRIX TO BE INVERTED C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE GAUO3IN(W, WI,NLEV, NBAND)\par
+      C\par
+      DIMENSION WI(NLEV)\par
+      DIMENSION W(2*NBAND+I,NLEV)\par
+      MID=NBAND+I\par
+      NROW=NLEV\par
+      NROWMI=NROW-I\par
+      DO 50 I=I,NROWMI\par
+                 C\par
+      PIVOT=W (MID, I )\par
+      JMAX=NBAND\par
+      IF (NROW-I. LT. JMAX) JMAX=NROW-I\par
+      DO 32 J=I,JMAX\par
+      32 W(MID+J,I)=W(MID+J,I)/PIVOT\par
+      KMAX=JMAX\par
+      DO 40K=I,KMAX\par
+      IPK=I+K\par
+      MIDMK=MID-K\par
+      FAC=W(MIDMK, IPK)\par
+      DO 40 J=I,JMAX\par
+      40 W(MIDMK+J, IPK)=W(MIDMK+J, IPK)-W(MID+J,I)*FAC\par
+      50 CONTINUE\par
+      DO 60I=I,NLEV\par
+      60 WI (I) =i./W (MID, I)\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C GAU03 PERFORMS A GAUSSIAN ELIMINATION C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C W -ARRAY CONTAINING COMPRESSED FORM C\par
+      C OF MATRIX A. C\par
+      C WI -INVERSE OF DIAGONAL ELEMENTS C\par
+      C NLEV -LENGTH OF DIAGONAL C\par
+      C NBAND -NUMBER OF SIDE DIAGONALS C\par
+      C B -RIGHT HAND SIDE OF EQUATIONS C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      CAGEO 16/~E\par
+      658 J. STEPPELER\par
+      SUBROUTINE GAUO3 (W, WI, NBAND, B, NLEV)\par
+      C\par
+      C FOR COMMENTS SEE SUBROUTINE GAU3IN\par
+      C\par
+      DIMENSION B (NLEV)\par
+      DIMENSION W (2*NBAND+I, NLEV)\par
+      DIMENSION WI (NLEV)\par
+      C\par
+      MID=NBAND+ 1\par
+      NROWMI =NLEV- 1\par
+      C FOREWARD PASS\par
+      DO 21 I=I,NROWMI\par
+      JMAX=NBAND\par
+      IF (NBAND. GT. NLEV-I ) JMAX=NLEV-I\par
+      DO 21 J=I,JMAX\par
+      21 B( I+J)=B( I+J)-B(I)*W(MID+J,I)\par
+      C\par
+      C BACKWARD PASS\par
+      C 4\par
+      DO 46 I=NLEV, 2,-I\par
+      B( I)=B(I)*WI(I)\par
+      JMAX=NBAND\par
+      IF (JMAX . GT. I -i ) JMAX=I-I\par
+      DO 46 J=I,JMAX\par
+      46 B( I-J)=B( I-J)-B(I)*W(MID-J,I)\par
+      B( I)=B(I)*WI(1)\par
+      C\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C IPOLY INTERPOLATES IN Y-DIRECTION C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C . PARAMETERS C\par
+      C C\par
+      C UQ -INPUT FIELD C\par
+      C UCQ -OUTPUT FIELD C\par
+      C UXQ -OUTPUT FIELD FOR DERIVATIVE C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE IPOLY (UQ, UCQ, UXQ)\par
+      PARAMETER ( L= 8, LCOL = 3 )\par
+      COMMON / COMGAU /\par
+      I WCOL (LCOL) ,XCOL (LCOL)\par
+      I, EMU ( LCOL), EMUP 1 ( LCO L )\par
+      C\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX, F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I , VX (L, LCOL, L, LCOL)\par
+      I ,UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I , VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I , VC (L, LCOL, L, LCOL)\par
+      I , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I , VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I, UCC (L, L, LCOL) , UCCY (L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      DIMENSION UQ (L, L), UCQ (L, L, LCOL), UXQ (L, L, LCOL)\par
+      DO i0 IX=I,L\par
+      DO i0 ICOLY=I,LCOL\par
+      DO i0 IY=I,L-I\par
+      UCQ (IX, IY, ICOLY) ~ (UQ (IX, IY) * (I.-XCOL (ICOLY))\par
+      I +UQ (IX, IY+I) * (XCOL (ICOLY) +I. ) ) *. 5\par
+      UXQ (IX, IY, ICOLY) = (UQ (IX, IY+l) -UQ (IX, IY) )/DX\par
+      10 CONTINUE\par
+      RETURN\par
+      END\par
+      Solution of shallow-water equations 659\par
+            CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C IPOLX INTERPOLATES IN X-DIRECTION C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C UQQ -INPUT FIELD C\par
+      C UQ -OUTPUT FIELD C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE IPOLX (UQQ, UQ)\par
+      PARAMETER ( L=8, LCOL=3 )\par
+      COMMON / COMGAU /\par
+      I WCOL (LCOL) ,XCOL (LCOL)\par
+      I, EMU (LCOL), EMUPI (LCOL)\par
+      C\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX, F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I ,VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I , VY (L, LCOL, L, LCOL)\par
+      I ,UC(L, LCOL, L, LCOL) ,HC(L,LCOL, L, LCOL)\par
+      I , VC (L, LCOL, L, LCOL)\par
+      I ,UTC(L, LCOL, L,LCOL) ,HTC(L, LCOL, L,LCOL)\par
+      I , VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I , UCC ( L, L, LCOL) , UCCY ( L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC ( L, L, LCOL )\par
+      DIMENSION UQQ (L, L, LCOL), UQ (L, LCOL, L, LCOL)\par
+      DO 10 IX=I,L-I\par
+      DO 10 ICOLX=I,LCOL\par
+      DO 10 IY=I,L-I\par
+      DO i0 ICOLY=I,LCOL\par
+      UQ (IX, ICOLX, IY, ICOLY) = (UQQ (IX, IY, ICOLY) * (I. -XCOL (ICOLX))\par
+      I +UQQ (IX+l, IY, ICOLY) * (XCOL (ICOLX) +I. ) ) *. 5\par
+      i0 CONTINUE\par
+      RETURN\par
+END\par
+            CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C DIFX COMPUTES DERIVATIVE IN X-DIRECTION C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C UQQ -INPUT FIELD C\par
+      C UQX -OUTPUT FIELD C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE DIFX (UQQ,UQX)\par
+      PARAMETER ( L=8, LCOL=3 )\par
+      COMMON / COMGAU/\par
+      I WCOL (LCOL) ,XCOL (LCOL)\par
+      I, EMU (LCOLI, EMUP1 (LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),VI (L,L),\par
+      I X (L) ,DX,F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I ,VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I , VY (L, LCOL, L, LCOL)\par
+      I ,UC(L, LCOL, L, LCOL) ,HC(L, LCOL, L, LCOL)\par
+      I , VC (L, LCOL, L, LCOL)\par
+      I , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      660 J. STEPPELER\par
+      I HCC(L,L, LCOL) ,HCCY(L,L, LCOL)\par
+      I, UCC (L, L, LCOL) , UCCY (L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      DIMENSION UQQ (L, L, LCOL), UQX (L, LCOL, L, LCOL)\par
+      DO I0 IX=I,L-I\par
+      DO 10 ICOLX=I,LCOL\par
+      DO 10 IY=I,L-I\par
+      DO i0 ICOLY=I,LCOL\par
+      UQX (IX, ICOLX, IY, ICOLY) = (UQQ (IX+l, IY, ICOLY)\par
+      I -UQQ (IX, IY, ICOLY) )/DX\par
+      10 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C GAUUY PERFORMS GAUSSIAN INVERSION IN Y-DIRECTION C\par
+      C USING WEIGHT H C\par
+      C C\par
+      C C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C QT -INPUT AND OUTPUT FIELD C\par
+      C C\par
+      C SUBROUTINES GAUO3IN AND GAUO3 ARE USED TO C\par
+      C PERFORM THE INVERSION ON A COLUMN C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      i0\par
+      50\par
+      SUBROUTINE GAUUY (QT)\par
+      PARAMETER (L=8, LCOL=3)\par
+      DIMENSION QT (L, L), HEL (L)\par
+      COMMON/COMGAU /\par
+      I WCOL (LCOL) ,XCOL (LCOL)\par
+      I, EMU (LCOL) , EMUPI (LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V\par
+      I UT (L,L) ,HT (L,L),VT\par
+      I U1 (L,L) ,HI (L,L),Vl\par
+      I X (L) ,DX, F\par
+      COMMON/DYI /\par
+      I\par
+      I\par
+I\par
+            I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      (L, L) ,\par
+      (L,L) ,\par
+      (L, L) ,\par
+      UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      ,VX (L, ~COL, L, LCOL)\par
+      , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+            , VY (L, LCOL, L, LCOL)\par
+      , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      ,VC (L, LCOL, L, LCOL)\par
+            ,UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /XIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I, UCC (L, L, LCOL) , UCCY ( L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      COMMON /A/ WU(3,L),WUI(L),WH(3,L),WHI(L)\par
+      SET UP MASS MATRIX\par
+      DO 900 IX=I,L\par
+      DO 1 IY=I, L\par
+      HEL (IY) =QT (IX, IY)\par
+      CONTINUE\par
+      LL=L-I\par
+      NBAND=I\par
+      DO 10 J=I,2*NBAND+I\par
+      DO 10 I=I,L\par
+      WU (J, I) =0.\par
+      CONTINUE\par
+      DO 100 ICOL=I,LCOL\par
+      DO 50 J=2,LL\par
+      WU (i, J) =WU (i, J) +. 5*DX*EMU (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      I *HCC (IX, J-l, ICOL)\par
+      WU (2, J) =WU (2, J) +. 5*DX*EMUPI (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      I *HCC (IX, J-l, ICOL)\par
+      WU (2, J) =WU (2, J) +. 5*DX*EMU (ICOL) *EMU (ICOL) *WCOL (ICOL)\par
+      I *HCC (IX, J, ICOL)\par
+      WU (3, J) =WU (3, J) +. 5*DX*EMU (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      I *HCC (IX, J, ICOL)\par
+      CONTINUE\par
+      Solution of shallow-water equations\par
+      i00 CONTINUE\par
+      C pREPARE INVERSION\par
+      DO II0 I=2,LL\par
+      WU(I,I-I)=WU(I,I)\par
+      WU(2,1-1)=WU(2,I)\par
+      WU (3, I-1) =WU(3, I)\par
+      WUI (I-l) =WUI (I)\par
+      HEL (I-l) =HEL (I)\par
+      Ii0 CONTINUE\par
+      CALL GAUO3IN(WU,WUI,LL-I,I)\par
+      C INVERSION\par
+      CALL GAUO3(WU,WUI, I,HEL, LL-I)\par
+      DO 120 I=L,2,-I\par
+      120 HEL(I)=HEL(I -I)\par
+      HEL(1)=0.\par
+      HEL (L) =0.\par
+      DO 800 IY=I,L\par
+      QT (IX, IY) =HEL (IY)\par
+      800 CONTINUE\par
+      900 CONTINUE\par
+            RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+            C GAUHY PERFORMS GAUSSIAN INVERSION IN Y-DIRECTION C\par
+      C USING WEIGHT 1 C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C QT -INPUT AND OUTPUT FIELD C\par
+      C C\par
+            C SUBROUTINES GAUO3IN AND GAUO3 ARE USED TO C\par
+      C PERFORM THE INVERSION ON A COLUMN C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      I0\par
+      SUBROUTINE GAUHY (QT)\par
+      PARAMETER ( L= 8, LCOL = 3 )\par
+      COMMON / COMGAU/\par
+                  I WCOL (LCOL), XCOL (LCOL)\par
+            I, EMU (LCOL), EMUPI (LCOL)\par
+      COMMON / DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX, F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I ,VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I , VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I ,VC (L, LCOL, L, LCOL)\par
+      I , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I, UCC (L, L, LCOL) , UCCY (L, L, LCOL)\par
+      I, VCC (L, L, LCOL) , VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      COMMON /A/ WU(3,L),WUI (L),WH(3,L),WHI (L)\par
+      DIMENSION QT(L,L),HEL(L)\par
+      SET UP MASS MATRIX\par
+      DO 900 IX=I,L\par
+      DO 1 IY=I, L\par
+      HEL (IY) =QT (IX, IY)\par
+      CONTINUE\par
+      LL=L-I\par
+      NBAND=I\par
+      DO 10 J=I,2*NBAND+I\par
+      DO i0 I=I,L\par
+      WH (J, I) =0.\par
+      CONTINUE\par
+      DO 100 ICOL=I,LCOL\par
+      DO 20 J=2,L\par
+      WH (i, J) =WH (I, J) +. 5*DX*EMU (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      WH (2, J) =WH (2, J) +. 5*DX*EMUPI (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+            661\par
+      662 J. STEPPELER\par
+      20 CONTINUE\par
+            DO 40 J=I,LL\par
+      WH (2, J) =WH (2, J) +. 5*DX*EMU (ICOL) *EMU (ICOL) *WCOL (ICOL)\par
+      WH (3, J) =WH (3, J) +. 5*DX*EMU (ICOL) *EMUP1 (ICOL) *WCOL (ICOL)\par
+      40 CONTINUE\par
+      100 CONT I NUE\par
+      CALL GAUO3 IN (WH, WHI, L, I )\par
+      C INVERSION\par
+      CALL GAUO3 (WH, WHI, 1, HEL, L)\par
+      DO 800 IY=I,L\par
+      QT (IX, IY)=HEL (IY)\par
+                  800 CONTINUE\par
+      900 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+            C GAUUX PERFORMS GAUSSIAN INVERSION IN X-DIRECTION C\par
+      C USING WEIGHT H C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C QTQ~Q -INPUT AND OUTPUT FIELD C\par
+            C C\par
+      C SUBROUTINES GAUO3IN AND GAUO3 ARE USED TO C\par
+      C PERFORM THE INVERSION ON A COLUMN C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE GAUUX (QTQQ)\par
+      PARAMETER (L=8, LCOL=3 )\par
+      COMMON/COMGAU/\par
+      I WCOL (LCOL), XCOL (LCOL)\par
+      I, EMU (LCOL) , EMUPI (LCOL)\par
+      C\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX,F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I , VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I ,VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I ,VC (L, LCOL, L, LCOL)\par
+      I , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I, UCC ( L, L, LCOL) , UCCY ( L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC ( L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      COMMON /A/ WU(3,L),WUI(L),WH(3,L),WHI (L)\par
+      DIMENSION QTQQ(L,L, LCOL),HEL(L),HELI(L),HEL2(L)\par
+      C SET UP MASS MATRIX\par
+      DO 900 IY=I,L-I\par
+      DO 900 ICOLY=I,LCOL\par
+      DO 1 IX=I, L-I\par
+      HEL (IX) =QTQQ (IX, IY, ICOLY)\par
+      HELl (IX) .=0.\par
+      HEL2 (IX)=0.\par
+      1 CONTINUE\par
+      LL=L-I\par
+      NBAND=I\par
+      DO 10 J=I,2*NBAND+I\par
+      DO i0 I=I,L-I\par
+      WH(J, I)=0.\par
+      10 CONTINUE\par
+      DO 100 ICOL=I,LCOL\par
+      DO 20 J=2,L\par
+      JP=J\par
+      IF (JP. EQ. L) JP=I\par
+      WH (i, JP) =WH (I, JP) +. 5*DX*EMU (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      I *HC (J-l, ICOL, IY, ICOLY)\par
+      WH (2, JP) =WH (2, JP) +. 5*DX*EMUPI (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      I *HC (J-l, ICOL, IY, ICOLY)\par
+      Solution ofshallow-waterequations\par
+      20 CONTINUE\par
+      DO 40 J=I,LL\par
+      WH(2,J)=WH(2,J)+.5*DX*EMU(ICOL)*EMU(ICOL)*WCOL(ICOL)\par
+      I *HC(J, ICOL, IY, ICOLY)\par
+      WH(3,J)=WH(3,J)+.5*DX*EMU(ICOL)*EMUPI(ICOL)*WCOL(ICOL)\par
+      I *HC(J, ICOL, IY, ICOLY)\par
+      40 CONTINUE\par
+      i00 CONTINUE\par
+      HELI(L-I)=WH(3,L-I)\par
+      HEL2(1)=WH(I,I)\par
+      CALL GAUO3IN(WH,WHI,L-I,I)\par
+      INVERSION\par
+      CALL GAUO3(WH,WHI,I,HEL, L-I)\par
+      CALL GAUO3(WH,WHI,I,HELI,L-I)\par
+      CALL GAUO3(WH,WHI,I,HEL2,L-I)\par
+      AII=I.+HELI(1)\par
+      AI2=HEL2(1)\par
+      A21=HELI(L-I)\par
+      A22=I.+HEL2(L-I)\par
+      XN= (HEL(1)*A22-HEL(L-I)*AI2)/(A22*AII-A21*AI2)\par
+      X0=-(HEL(1)*A21-HEL(L-I)*AII)/(A22*AII-A21*AI2)\par
+      DO 2 I=I,L-I\par
+      HEL(I)=HEL(I)-XN*HELI(I)-X0*HEL2(I)\par
+      2 CONTINUE\par
+      HEL(L)=XN\par
+      DO 800 IX=I,L\par
+      QTQQ(IX, IY, ICOLY)=HEL(IX)\par
+      800 CONTINUE\par
+      900 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+C C\par
+            C GAUHX PERFORMS GAUSSIAN INVERSION IN X-DIRECTION C\par
+C USING WEIGHT 1 C\par
+      C C\par
+      C C\par
+            C C\par
+C PARAMETERS C\par
+      C C\par
+            C QTQQ -INPUT AND OUTPUT FIELD C\par
+C C\par
+      C SUBROUTINES GAUO3IN AND GAU03 ARE USED TO C\par
+            C PERFORM THE INVERSION ON A COLUMN C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE GAUHX(QTQQ)\par
+      PARAMETER(L=8,LCOL=3)\par
+      COMMON/COMGAU/\par
+      I WCOL(LCOL),XCOL(LCOL)\par
+      I,EMU(LCOL),EMUPI(LCOL)\par
+      COMMON /DYNVAR/\par
+I U (L, L) , H\par
+            I UT (L,L) ,HT\par
+I U1 (L,L) ,HI\par
+      I X (L) ,DX,F\par
+      COMMON/DYI /\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      (L,L) ,V (L,L) ,\par
+      (L, L) ,VT (L,L) ,\par
+      (L, L) ,VI (L,L) ,\par
+      UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      ,VX (L, LCOL, L, LCOL)\par
+      , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      ,VY (L, LCOL, L, LCOL)\par
+      , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      ,VC (L, LCOL, L, LCOL)\par
+      , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      , VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+I, UCC (L, L, LCOL), UCCY (L, L, LCOL)\par
+      I, VCC (L, L, LCOL) , VCCY (L, L, LCOL)\par
+            I, HTCC (L, L, LCOL)\par
+      I, UTCC ( L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      COMMON /A/ WU(3,L),WUI (L),WH(3,L),WHI (L)\par
+      DIMENSION QTQQ (L, L, LCOL), HEL (L), HELl (L), HEL2 (L)\par
+      SET UP MASS MATRIX\par
+      DO 900 IY=I,L-I\par
+      DO 900 ICOLY=I,LCOL\par
+      DO 1 IX=I, L-I\par
+      HEL (IX) =QTQQ (IX, IY, ICOLY)\par
+      HELl (IX)=0.\par
+      HEL2 (IX) =0.\par
+      663\par
+      664 J. STEPPELER\par
+      i0\par
+      CONTINUE\par
+      LL=L-1\par
+      NBAND=I\par
+      DO I0 J=I,2*NBAND+I\par
+      DO i0 I=I,L-I\par
+      WH (J, I) =0.\par
+      CONTINUE\par
+      DO 100 ICOL=I,LCOL\par
+      DO 20 J=2,L\par
+      JP=J\par
+      IF (JP.EQ. L) JP=I\par
+      WH (i, JP) =WH (I, JP) +. 5*DX*EMU (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      WH (2, JP) =WH (2, JP) +. 5*DX*EMUPI (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      20 CONT I NUE\par
+DO 40 J=I,LL\par
+            WH (2, J) =WH (2, J) +. 5*DX*EMU (ICOL) *EMU (ICOL) *WCOL (ICOL)\par
+WH (3, J) =WH (3, J) +. 5*DX*EMU (ICOL) *EMUPI (ICOL) *WCOL (ICOL)\par
+      40 CONTINUE\par
+      100 CONTINUE\par
+      HELl (L-I) =WH (3, L-l)\par
+      HEL2 (I) =WH (I, I)\par
+      CALL GAUO3IN (WH, WHI, L-l, 1 )\par
+      C INVERSION\par
+      CALL GAUO3 (WH, WHI, 1, HEL, L-I )\par
+      CALL GAUO3 (WH,WHI, i, HELl, L-l)\par
+      CALL GAU03 (WH, WHI, i, HEL2, L-I )\par
+      AII=I. +HELl (I)\par
+      AI2=HEL2 (i)\par
+      A21=HELI (L-l)\par
+      A22=I. +HEL2 (L-l)\par
+      XN= (HEL(1) *A22-HEL(L-I) *AI2) / (A22*AII-A21*AI2)\par
+      X0=-(HEL(1)*A21-HEL(L-I)*AII) / (A22*AII-A21*AI2)\par
+      DO 2 I=I,L-I\par
+      HEL ( I ) =HEL ( I ) -XN* HELl (I) -X 0*HEL2 ( I )\par
+      2 CONTINUE\par
+      HEL (L) =XN\par
+      DO 800 IX=I,L\par
+      QTQQ (IX, IY, ICOLY) =HEL (IX)\par
+      800 CONT I NUE\par
+      900 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C SCALUX COMPUTES THE SCALAR PRODUCT IN X-DIRECTION C\par
+      C USING WEIGHT H C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C HTQ -INPUT FIELD C\par
+      C HTQQ -OUTPUT FIELD C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE SCALUX (HTQ, HTQQ)\par
+      PARAMETER (L=8, LCOL=3 )\par
+      COMMON / COMGAU /\par
+      I WCOL (LCOL) ,XCOL (LCOL)\par
+      I, EMU (LCOL), EMUPI (LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+I U1 (L,L) ,HI (L,L),VI (L,L),\par
+            I X (L) ,DX, F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I ,VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL), HY (L, LCOL, L, LCOL)\par
+      I ,VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I ,VC (L, LCOL, L, LCOL)\par
+      I , UTC (L, LCOL, L, LCOL), HTC (L, LCOL, L, LCOL)\par
+      I ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I, UCC (L, L, LCOL) , UCCY (L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      DIMENSION\par
+      Solution of shallow-water equation\par
+      I0\par
+      I HTQ(L, LCOL, L, LCOL)\par
+      I,HTQQ(L,L, LCOL)\par
+      DO i0 IX=I,L\par
+      DO 10 ICOLY=I,LCOL\par
+      DO 10 IY=I,L\par
+      HTQQ(IX, IY, ICOLY)=0.\par
+      CONTINUE\par
+      DO 20 IX=I,L-I\par
+      ITOP=IX+I\par
+      IF(ITOP.EQ.L) ITOP=I\par
+      DO 20 ICOLX=I,LCOL\par
+      WB=(I.-XCOL(ICOLX))*.5*WCOL(ICOLX)\par
+      WT=(XCOL(ICOLX)+I.)*.5*WCOL(ICOLX)\par
+      DO 15 ICOLY=I,LCOL\par
+      DO 15 IY=I,L-I\par
+      HTQQ(IX, IY,ICOLY)=\par
+      I HTQQ(IX, IY, ICOLY)+HTQ(IX, ICOLX, IY, ICOLY)*WB*DX*.5\par
+      I *HC(IX, ICOLX,IY, ICOLY)\par
+      HTQQ(ITOP,IY,ICOLY)=\par
+      I HTQQ(ITOP,IY, ICOLY)+HTQ(IX, ICOLX, IY, ICOLY)*WT*DX*.5\par
+      I *HC(IX, ICOLX, IY, ICOLY)\par
+      15 CONTINUE\par
+            20 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C SCALHX COMPUTES THE SCALAR PRODUCT IN X-DIRECTION C\par
+      C USING WEIGHT i C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+            C C\par
+      C HTQ -INPUT FIELD C\par
+      C HTQQ -OUTPUT FIELD C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE SCALHX (HTQ, HTQQ)\par
+      PARAMETER (L=8, LCOL=3)\par
+      COMMON / COMGAU /\par
+      I WCOL (LCOL), XCOL (LCOL)\par
+      I, EMU (LCOL), EMUPI (LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),Vl (L,L),\par
+      I X (L) ,DX,F\par
+      COMMON/DYI /\par
+      I UX (L, LCOL, L, LCOL) , HX (L, LCOL, L, LCOL)\par
+      I ,VX (L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      I ,VY (L, LCOL, L, LCOL)\par
+      I ,UC(L, LCOL, L, LCOL),HC(L, LCOL,L, LCOL)\par
+      I ,VC (L, LCOL, L, LCOL)\par
+      I , UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      I ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /YIPO/\par
+      I HCC (L, L, LCOL) , HCCY (L, L, LCOL)\par
+      I, UCC (L, L, LCOL), UCCY (L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC ( L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I, VTCC (L, L, LCOL)\par
+      DIMENSION\par
+      I HTQ (L, LCOL, L, LCOL)\par
+      I, HTQQ ( L, L, LCOL)\par
+      DO I0 IX=I,L\par
+      DO 10 ICOLY=I,LCOL\par
+      DO i0 IY=I,L\par
+      HTQQ (IX, IY, ICOLY) =0.\par
+      CONTINUE\par
+      DO 20IX=I, L-I\par
+      ITOP=IX+I\par
+      IF (ITOP. EQ. L) ITOP=I\par
+      DO 20 ICOLX=I,LCOL\par
+      WBH= (i. -XCOL (ICOLX)) *. 5*WCOL (ICOLX)\par
+      WTH= (XCOL (ICOLX) +I. ) *. 5*WCOL (ICOLX)\par
+      DO 15 ICOLY=I,LCOL\par
+      DO 15 IY=I,L-I\par
+      HTQQ (IX, IY, ICOLY) =\par
+      10\par
+      665\par
+      666 J. STEPPELER\par
+      I HTQQ (IX, IY, ICOLY) +HTQ (IX, ICOLX, IY, ICOLY) *WBH*DX*. 5\par
+      HTQQ (ITOP, IY, ICOLY) =\par
+      I HTQQ (ITOP, IY, ICOLY) +HTQ (IX, ICOLX, IY, ICOLY) *WTH*DX*. 5\par
+      15 CONTINUE\par
+      20 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C SCALUY COMPUTES THE SCALAR PRODUCT IN Y-DIRECTION C\par
+      C USING WEIGHT H C\par
+      C C\par
+      C C\par
+      C C\par
+      C PARAMETERS (3\par
+      C C\par
+      C HTQQ -INPUT FIELD C\par
+      C QT -OUTPUT FIELD C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      SUBROUTINE SCALUY(HTQQ, QT)\par
+      PARAMETER(L=8,LCOL=3)\par
+      COMMON/COMGAU/\par
+      I WCOL(LCOL),XCOL(LCOL)\par
+      I,EMU(LCOL),EMUPI(LCOL)\par
+      C\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V (L,L),\par
+      I UT (L,L) ,HT (L,L),VT (L,L),\par
+      I U1 (L,L) ,HI (L,L),VI (L,L),\par
+      I X (L) ,DX, F\par
+      COMMON/DYI/\par
+            I UX(L, LCOL, L, LCOL),HX(L, LCOL, L, LCOL)\par
+      I ,VX(L, LCOL, L, LCOL)\par
+      I , UY (L, LCOL, L, LCOL), HY (L, LCOL, L, LCOL)\par
+      I , VY (L, LCOL, L, LCOL)\par
+      I , UC (L, LCOL, L, LCOL) , HC (L, LCOL, L, LCOL)\par
+      I ,VC(L, LCOL,L, LCOL)\par
+      I ,UTC(L, LCOL, L, LCOL),HTC(L, LCOL, L, LCOL)\par
+      I ,VTC(L, LCOL, L, LCOL)\par
+            COMMON /YIPO/\par
+      I HCC(L,L, LCOL),HCCY(L,L, LCOL)\par
+      I,UCC(L,L, LCOL),UCCY(L,L, LCOL)\par
+      I,VCC(L,L, LCOL),VCCY(L,L, LCOL)\par
+      I,HTCC(L,L, LCOL)\par
+      I,UTCC(L,L, LCOL)\par
+      I,VTCC(L,L, LCOL)\par
+      DIMENSION\par
+      I QT(L,L)\par
+      I,HTQQ(L,L, LCOL)\par
+      DO I0 IX=I,L\par
+      DO i0 IY=I,L\par
+      QT(IX, IY)=0.\par
+      10 CONTINUE\par
+      DO 20 IY=I,L-I\par
+      ITOP=IY+I\par
+      DO 20 ICOLY=I,LCOL\par
+      WBH=(I.-XCOL(ICOLY))*.5*WCOL(ICOLY)\par
+      WTH=(XCOL(ICOLY)+I.)*.5*WCOL(ICOLY)\par
+      DO 15IX=I,L\par
+      QT(IX, IY)=\par
+      I QT(IX, IY)+HTQQ(IX, IY,ICOLY)*WBH*DX*.5\par
+      I *HCC(IX, IY, ICOLY)\par
+      QT(IX, ITOP) =\par
+      I QT(IX, ITOP)+HTQQ(IX, IY, ICOLY)*WTH*DX*.5\par
+      I *HCC(IX, IY, ICOLY)\par
+      15 CONTINUE\par
+      20 CONTINUE\par
+      RETURN\par
+      END\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      C C\par
+      C SCALHY COMPUTES THE SCALAR PRODUCT IN Y-DIRECTION C\par
+      C USING WEIGHT 1 C\par
+      C C\par
+      C ..................................................... C\par
+      C C\par
+      C PARAMETERS C\par
+      C C\par
+      C HTQQ -INPUT FIELD C\par
+      C QT -OUTPUT FIELD C\par
+      C C\par
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\par
+      Solution of shallow-water equations 667\par
+      I0\par
+      15\par
+      20\par
+      SUBROUTINE SCALHY(HTQQ,QT)\par
+      PARAMETER(L~8,LCOL=3)\par
+      COMMON/COMGAU/\par
+      I WCOL(LCOL),XCOL(LCOL)\par
+      I,EMU(LCOL),EMUPI(LCOL)\par
+      COMMON /DYNVAR/\par
+      I U (L,L) ,H (L,L),V\par
+      I UT (L,L) ,HT (L,L),VT\par
+      I U1 (L,L) ,HI (L,L),VI\par
+      I X (L) ,DX,F\par
+      COMMON/DYI/\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      I\par
+      (L,L),\par
+      (L,L),\par
+      (L,L),\par
+      UX (L, LCOL, L, LCOL), HX (L, LCOL, L, LCOL)\par
+      ,VX (L, LCOL, L, LCOL)\par
+      , UY (L, LCOL, L, LCOL) , HY (L, LCOL, L, LCOL)\par
+      ,VY (L, LCOL, L, LCOL)\par
+      , UC (L, LCOL, L, LCOL), HC (L, LCOL, L, LCOL)\par
+      , VC ( L, LCOL, L, LCOL )\par
+      ,UTC (L, LCOL, L, LCOL) , HTC (L, LCOL, L, LCOL)\par
+      ,VTC (L, LCOL, L, LCOL)\par
+      COMMON /YTPO/\par
+      I HCC (L, L, LCOL), HCCY (L, L, LCOL)\par
+      I, UCC ( L, L, LCOL) , UCCY ( L, L, LCOL)\par
+      I,VCC (L, L, LCOL) ,VCCY (L, L, LCOL)\par
+      I, HTCC (L, L, LCOL)\par
+      I, UTCC (L, L, LCOL)\par
+      I,VTCC (L, L, LCOL)\par
+      DIMENSION\par
+      I QT (L, L)\par
+      I, HTQQ (L, L, LCOL)\par
+      DO I0 IX=I,L\par
+      DO 10 IY=I,L\par
+      QT (IX, IY) =0.\par
+      CONTINUE\par
+      DO 20 IY=I,L-I\par
+      ITOP=IY+I\par
+      DO 20 ICOLY=I,LCOL\par
+      WBH = (i. -XCOL (ICOLY)) *. 5*WCOL (ICOLY)\par
+      WTH= (XCOL (ICOLY) +i. ) *. 5*WCOL (ICOLY)\par
+      DO 15IX=I, L\par
+      QT (IX, IY) =\par
+      I QT (IX, IY) +HTQQ (IX, IY, ICOLY) *WBH*DX*. 5\par
+      QT (IX, ITOP) =\par
+      I QT (IX, ITOP) +HTQQ (IX, IY, ICOLY) *WTH*DX*. 5\par
+      CONTINUE\par
+      CONTINUE\par
+      RETURN\par
+      END\par
+                        \par
+\par
+}
+ 

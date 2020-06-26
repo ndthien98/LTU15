@@ -1,0 +1,1 @@
+clear;clc;n = 5;input('Nhap n:',n);%A = rand(n,n);A = reshape((1:25),n,n);AU = A;L = eye(n,n);for i=1:n-1;  if(U(i,i)==0)     continue;  endif;  for j=i+1:n;    L(j,i) = U(j,i)/U(i,i);    U(j,:) = U(j,:) - L(j,i).*U(i,:);  endfor;endfor;LU

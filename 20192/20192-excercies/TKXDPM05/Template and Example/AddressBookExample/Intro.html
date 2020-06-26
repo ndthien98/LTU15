@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"DTD/xhtml11-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+<meta name="keywords" content="object-oriented, analysis, design, UML, java" /> 
+<title>Introduction</title>
+
+</head>
+
+<body>
+<h2>Introduction</h2>
+
+<h3>What you will Find Here</h3>
+
+<p>
+This page is the starting point into a series of pages that attempt to give a
+complete example of object-oriented analysis, design, and programming applied to
+a small size problem: a simple address book.  These pages are similar in style to
+another, more complicated set of pages I developed earlier:
+<a href="http://www.cs.gordon.edu/courses/cs211/ATMExample/index.html" target="_top">
+A Simulation of an Automated Teller Machine (ATM)</a>.
+I developed both that set of pages and this in the belief that students would benefit
+from seeing a <em>complete</em> example of OO methodology applied to a single problem.
+The problem documented by this set of pages is <em>much</em> simpler than the ATM
+Example, and so is more accessible to undergraduate students seeing OO methodology
+and UML for the first time.
+</p>
+
+<p>
+Beginning with a statement of requirements, the process proceeds through analysis,
+overall design, and detailed design.  For this problem, I stopped the process just
+short of coding, for two reasons:
+</p>
+
+<ol>
+	<li>Students are prone to jump right into the coding phase, without spending adequate
+	time on design.  This example is meant to focus attention on the all-important design
+	portion of the process.</li>
+
+	<li>The actual writing of the code is an assignment in two closed labs and an
+	open lab programming project in one of my courses.</li>
+</ol>
+
+(Note: the ATM Example referred to above <em>does</em> include complete code.)
+
+
+
+<h3>Background</h3>
+
+<p>
+The original idea for this example came from a textbook example in the book I used
+for my <a href="http://www.cs.gordon.edu/courses/cs112" target="_top">Introduction
+to Programming course</a> - <em>An Introduction to Object-Oriented Programming
+with Java</em> by C. Thomas Wu.
+The first time I taught the course (in the spring of 2000), I turned this example
+into a set of labs and a project which culminated in having students develop a fairly
+complete GUI for the address book (which went far beyond the example in Wu's book).  
+In subsequent years, I have improved the labs and the project, giving my students some
+design information in the form of various UML diagrams.  More recently, I decided
+that working this up into a complete example of the design process, using UML, could
+be a valuable teaching tool in my <a href="http://www.cs.gordon.edu/courses/cs211"
+target = "_top">Object-Oriented  Software Development</a> course, which many of
+the students who take the introduction to programming course take the following semester.
+This example also illustrates the Model-View-Controller and Observer design patterns.
+</p>
+<p>
+I currently use a <a href="http://www.cs.gordon.edu/courses/cs112/Projects/Project3/index.html"
+target="_top">vastly-simplified version</a> of these pages for a project in the
+introduction to programming course.
+</p>
+
+<p>
+It may be argued that more diagrams have been used than are really necessary for
+a project of this size.  I wanted to give an example of using a variety of
+different UML diagrams.  Even so, this example does not include any
+statechart, collaboration, package, activity, component, or deployment diagrams.
+</p>
+
+<p>
+Note: Some of the diagrams have been deliberately omitted from the various pages.
+Students taking my course will no doubt come to understand the phrase "... has been
+left as an exercise for the reader"!  
+</p>
+
+<h3>Using these Pages</h3>
+
+<p>
+Probably the best way to start using these pages is to begin with the requirements
+and work through the entire analysis, high-level design, and detailed design process.
+</p>
+
+<ol>
+<li>Begin with the Requirements and User Interface document.<br />&nbsp;<br />
+	The first task that must be performed in any project is clearly understanding
+	the requirements.  This series of pages starts with a statement of the overall
+	requirements for the software, without attempting to discuss the process of
+	actually arriving at them. For a problem of this size, identifying 
+	the requirements is fairly straightforward.  In a real system, however, 
+	identifying the requirements will generally be a non-trivial task.  That,
+	however, is not the focus of this set of pages.
+	<br />&nbsp;
+</li>
+<li>Then view the Use Cases and Further Analysis.<br />&nbsp;<br />
+	Analysis is begun by identifying the use cases that follow from the requirements,
+	and detailing a flow of events for each.  Further analysis identifies the key 
+	classes that are suggested by the use cases, and considers how each use case
+	can be carried out by an interaction between objects belonging to these classes.
+	<br />&nbsp;
+	<ul>
+	<li>The Use Case document has a Use Case Diagram and a series of flows of events,
+		one for each use case.  Each use case also has a link to a Sequence Diagram
+		(part of the Design phase) which shows how it is realized; these links can
+		be followed while studying the design phase to see how the analysis phase
+		flows into the design phase.
+	</li>
+	<li>The Further Analysis document deals with both the "big picture" and the
+		details of the various use cases.  The former is provided by an Analysis
+		Class Diagram, with each class having a link to its CRC card; the latter
+		by a discussion of how the key objects objects would need to interact in
+		order to implement the use case.
+		<br />&nbsp;
+	</li>
+	</ul>
+	These two documents represent two different ways of viewing the overall system,
+	which continue into the next phase.  The Use Case document presents a
+	use-case centric view of the system, focussing on the specific functions it
+	provides.  The Further Analysis document presents a class centric view of
+	the system, focussing on how will be built.<br />&nbsp;
+</li>
+<li>This example uses CRC Cards and Sequence Diagrams for high level Design. There
+	are certainly other tools that might be used - e.g. the ATM Example referred
+	to above makes use of Collaboration Diagrams and State Charts as well.
+	<br />&nbsp;
+	<ul>
+	<li>The responsibilities of each class that arise from the use cases are
+		recorded on a CRC card for each class.   The CRC cards could be created
+		by "walking through" each use case, assigning the responsibility for each
+		task to some class.  
+	</li>
+	<li>There is a Sequence Diagram for each use case, showing how the use case
+		is realized by interaction of the major objects. 
+	</li>
+	<li>A Class Diagram shows how the various classes are related to one another.
+		It also shows several additional classes that were "discovered" during
+		the process of creating the Sequence Diagrams - i.e. classes needed to
+		actually build the system, though not evident in the original analysis.
+		On this diagram, the class icon is linked to a detailed design for that class.
+	</li>
+	</ul>
+	<br />&nbsp;
+</li>
+<li>Detailed design is done by using a detailed UML diagram for each class, showing
+	its attributes and operations.  As noted above, although I have not included the
+	actual implementation in Java code, I have included the Javadoc documentation for
+	the classes to "flesh out" the information in the UML diagrams.<br />&nbsp;
+</li>
+<li>A demonstration executable version of the the system, in the form of a Java 
+	Applet. This version is limited, because the Java mechanisms to protect 
+	against malicious code limit access to the file system on the host computer. 
+	For this reason, it is not possible to use the "Open", "Save", or "Save As" 
+	features of the demonstration - attempting to do so will result in an error 
+	dialog. <br />&nbsp;
+</li>
+<li>No actual code or complete executable version of this system is provided.  
+	The ATM Example System does provide both of these; but since I use the 
+	implementation of this system as a programming project, putting the code 
+	online would make the project just a bit too simple! :-) <br />&nbsp;
+</li>
+<li>A page of maintenance ideas suggests changes that might be made to improve
+	the system.  These changes would necessarily involve modifying many of
+	the sample documents, not just modifying code.
+</li>
+</ol>
+
+
+
+<p>
+</p>
+
+
+<h3>Author and Copyright Information</h3>
+
+<p>
+Though the pages are copyrighted, I hereby freely give permission for their 
+reproduction for non commercial educational purposes.  I hope they will prove useful
+to other faculty who are teaching OO methods.
+I would also really welcome suggestions and <a href="mailto:bjork@gordon.edu">
+feedback</a> - either about the design itself or the way it is presented.  Input
+from UML guru's would especially be appreciated, as I am revising these pages in part
+as a way to learn UML myself!
+</p>
+
+<p>
+Russell C. Bjork<br />
+Professor of Computer Science<br />
+<a href="http://www.gordon.edu/" target="_top">Gordon College</a><br />
+255 Grapevine Road<br />
+Wenham, MA 01984<br />
+(978) 927-2300 x 4377<br />
+bjork@gordon.edu
+</p>
+
+<p class="navigation">
+<a href="Requirements.html"><img src="Images/Next.gif" alt="Link to next page" /></a>
+</p>
+
+<p>
+<a href="Links.html">Page of links for non frames-enabled browsers.</a>
+</p>
+
+<p>
+<a href="http://validator.w3.org/check/referer">
+<img class="XHTML_image"
+	src="Images/XHTML_validation_image.gif"
+	alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p>
+  
+<h6>Copyright &copy; 2005, 2008 - Russell C. Bjork.  Permission for non-commercial 
+reproduction for educational use is hereby granted; all other rights are reserved.</h6>
+
+</body>
+</html>

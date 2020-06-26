@@ -1,0 +1,70 @@
+#0 tien xu li
+#chay lenh nay de install tat ca moi thu can thiet 
+sudo apt-get -y install net-tools openssh-client openssh-server nfs-kernel-server nfs-common openmpi-bin openmpi-common libopenmpi-dev libgtk2.0-dev 
+
+#1
+ssh-keygen -t rsa 
+
+#copy id_rsa.pub sang may khac luu vao thu muc ~/.ssh/authorized_keys
+
+#sua file sshd_config
+# PubkeyAuthentication yes 
+# RSAAuthentication yes 
+sudo nano /etc/ssh/sshd_config
+sudo service ssh restart 
+#2
+
+#2.1 server 
+sudo mkdir -p ~/Desktop/sharedfolder 
+sudo chown nobody:nogroup ~/Desktop/sharedfolder 
+sudo chmod 777 ~/Desktop/sharedfolder 
+
+# them dia chi ip cac may vao nhau 
+sudo nano /etc/exports 
+#add 2 lines 
+/home/thiennd/Desktop/sharedfolder 192.168.123.123(rw,sync,no_subtree_check)
+/home/thiennd/Desktop/sharedfolder 192.168.123.123(rw,sync,no_subtree_check)
+
+sudo exports -a 
+sudo systemctl restart nfs-kernel-server 
+
+#2.2 client 
+sudo mkdir -p ~/Desktop/sharedfolder 
+sudo mount 192.168.1.1:/home/thiennd/Desktop/sharedfolder /home/thien-client/Desktop/sharedfolder 
+
+
+#3 
+download openmpi.zip tren trang chu openmpi.org 
+
+./configure --prefix="/home/thiennd/.openmpi" && make && sudo make install 
+
+#kiem tra xem lenh mpirun mpicc co chay khong 
+
+#4 
+#4.1 server 
+sudo nano /etc/hosts 
+# them ip 
+127.0.0.0 	localhost 
+192.168.123.123	client1
+192.168.123.123	client2
+
+#4.2 client 
+sudo nano /etc/hosts
+# them ip 
+127.0.0.0 	localhost 
+192.168.1.1	server
+
+
+#dowload slide ve 
+mpicc -o <filecuathay> ./outputfile
+cp ./outputfile ~/Desktop/sharedfolder 
+
+#check client xem sharedfolder co chua, khong co thi mount lai 
+
+#4.3 run 
+
+mpirun --hostfile /etc/hosts -np 6 ./outputfile 
+
+
+
+

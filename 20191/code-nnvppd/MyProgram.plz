@@ -1,0 +1,62 @@
+program thien;
+var a,b,c,d[1];
+
+procedure thien;
+var x,y,z[10];
+begin
+a:=1231;
+end;
+
+
+begin
+a:=10;
+a:=a*a;
+a:=a/a;
+a:=a+a;
+a:=a-a;
+
+for i := 1 to 10 do 
+begin 
+a:=a+i;
+end;
+
+while a>1 do begin a:=8; end;
+
+if a>1 then 
+begin 
+a  := 10;
+end;
+
+
+if a<2 then 
+begin 
+a  := 10;
+end;
+
+
+if a>=3 then 
+begin 
+a  := 10;
+end;
+
+if a=0 then 
+begin 
+end;
+
+if a<=4 then 
+begin 
+a  := 10;
+end;
+
+
+if a<>5 then 
+begin 
+a  := 10;
+end;
+
+if a<>6 then 
+begin 
+a:=100;
+end;
+
+end.
