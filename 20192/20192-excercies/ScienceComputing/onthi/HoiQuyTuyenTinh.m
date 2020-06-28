@@ -1,0 +1,1 @@
+clear;clc;% hồi quyx = [1 2 3 4 5 6 7 8];y = [1 8 27 64 125 216 350 560];c = polyfit(x,y,2);xx = 1:0.1:8;yy = polyval(c,xx);plot(x,y,'o',xx,yy,'-')

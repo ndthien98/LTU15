@@ -1,0 +1,3 @@
+clear;clc;% ham noi suy lagrangefunction [v] = interpolation(x,y,u);  n = size(x,1);  v = zeros(size(u));  for k=1:n;    w = ones(size(u));     for j=[1:k-1 k+1:n];      w = (u-x(j))./(x(k)-x(j)).*w;     endfor;      v = v + w*y(k);   endfor;  
+endfunction;
+x = [ 1,    2,    3];y = [ 1.5,  2,    3.5];u = [ 0:0.1:4 ];v = interpolation(x,y,u);figure(1);hold on;plot(x,y,'go');plot(u,v,'ro');hold off;

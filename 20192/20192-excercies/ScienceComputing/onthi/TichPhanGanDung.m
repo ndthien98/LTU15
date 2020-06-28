@@ -1,0 +1,1 @@
+clc;clear;% cong thuc hinh thang mo rong function [value] = TPGD(fun,a,b,n);  fa = fun(a);  fb = fun(b);  h = (b-a)/n;  iter = 1:n-1;  f = fun(iter.*h+a);  I = h/2*(fa + fb + 2*sum(f));  value = I;endfunctionf = @(x) -20.*x+7.*exp(-0.5.*x);fplot(f,[-10 -5]);s = TPGD(f,-10,-5,0.001);s

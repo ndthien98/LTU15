@@ -1,0 +1,1 @@
+A = [       1, 2, 3, 4, 5;      1, 2, 3, 4, 5;      1, 2, 3, 4, 5;      1, 2, 3, 4, 5;       1, 2, 3, 4, 5;       ]      [cot,hang] = size(A);dinhthuc = det(A); % định thức (chỉ cho ma trận vuông)hang = rank(A); % hạngdinhthuchang
