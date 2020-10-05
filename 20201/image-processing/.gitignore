@@ -1,2 +1,4 @@
 # virtual environment 
 image-processing/
+__pycache__/
+flask_server/__pycache__/
