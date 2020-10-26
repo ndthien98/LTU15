@@ -1,0 +1,91 @@
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+Phần đầu của chương này sẽ là những giải thích cho thuật toán sẽ được 
+đề cập. Người đọc lưu ý rằng thuật toán đề xuất chỉ áp dụng cho 
+cho các hàm \textit{piecewise linear} liên tục và chúng ta giả thiết 
+$X = [0, 1]$, mặc dù thuật toán có thể áp dụng cho bất kì khoảng đóng nào 
+trong tập $\mathbb{R}$.
+
+Mục đính của thuật toán là tính toán quỹ đạo của hệ động học mờ 
+$(\mathbb{F}^1(X), z_f)$, là mở rộng của hệ động học rời rạc $(X, f)$.
+Các tập mờ $A$ được sử dụng trong thuật toán cũng là các hàm 
+\textit{piecewise linear} $A: X \rightarrow [0, 1]$ (không nhất 
+thiết là liên tục). 
+
+Ý tưởng chính của thuật toán này là tính toán nguyên lý mở rộng Zadeh 
+trên các khoảng nhỏ mà trên đó đồng thời cả $f$ và $A$ đều là tuyến tính. 
+Bằng cách này, chúng ta không phải xấp xỉ quỹ đạo của $A$ mà có thể tính
+toán chính xác. 
+
+Bước 1 mô tả làm sao để phân rã $X = [0, 1]$ ra thành hữu hạn các khoảng 
+nhỏ để có thể tính toán trực tiếp. Kết quả của bước này là chúng ta 
+thu được một phân rã hữu hạn $J$ của $[0, 1]$ mà sao cho với mọi 
+$K \in J$ không tồn tại khoảng lớn hơn chứa $K$ mà cả $A$ và $f$ trong 
+khoảng đó đều tuyến tính. Điều kiện của $J$ này giúp chúng ta phải 
+tính toán trên ít các đoạn nhất có thể. 
+
+Trong bước 2, chúng ta sử dụng tính chất rằng nếu cả $A$ và $f$ đều 
+là ánh xạ tuyến tính trên khoảng $K$ thì khi áp dụng nguyên lý mở rộng 
+Zadeh cho $f$ và $A|_{K}$ thì kết quả cũng tuyến tính trên $f(K)$.
+Với mỗi khoảng $K \in J$, áp dụng các tính trên ta 
+thu được tập các đoạn thẳng. Nếu lấy supremum của tập các đoạn thẳng 
+đó ta sẽ thu được ảnh của $z_f(A)$ của tập mờ $A$. 
+
+Bước 3 là lặp lại bước 1 và 2 cho đến khi nào đạt tới số 
+vòng lặp $M$ mong muốn. \\[2mm]
+
+INPUT:
+\begin{itemize}
+\item Một hàm \textit{piecewise linear} liên tục
+$f: [0, 1] \rightarrow [0, 1]$
+được cho bởi các điểm $(c_i, s_i)$. Hay một cách chính xác: 
+$$
+f(x) =
+\begin{cases} 
+s_1 + (s_2 - s_1) \cdot \frac{x - c_1}{c_2 - c_1} & c_1 \le x \le c_2 \\
+s_2 + (s_3 - s_2) \cdot \frac{x - c_2}{c_3 - c_2} & c_2 \le x \le c_3 \\
+\vdots&\\
+s_{l - 1} + (s_l - s_{l - 1}) \cdot \frac{x - c_{l - 1}}{c_l - c_{l - 1}} & 
+c_{l - 1} \le x \le c_l
+\end{cases}
+$$
+
+\item Một số $M$ là số bước lặp. 
+\item Khởi tạo $k = 1$.
+\end{itemize}
+
+BƯỚC 1:
+\begin{itemize}
+\item Tạo một tập $J$ bao gồm $s$ đoạn thẳng $L_i$ sinh bởi các đoạn 
+    thẳng từ tập A bởi thuật giải đệ quy sau: Với mỗi $c_j \in (a_i, a_i')$
+    từ đoạn $L_i' := ((a_i, b_i), (a_i', b_i')) \in J$ và m là số lượng
+    phần tử trong $J$. Thì J sẽ được thay thế $L_i'$ bằng hai phần 
+    tử $L_i=((a_i, b_i), (c_j, A(c_j)))$ và 
+    $L_{m + 1} = ((c_j, A(c_j)),(a_i', b_i'))$
+\end{itemize}
+
+BƯỚC 2:
+\begin{itemize}
+\item Với mỗi $i = 1, 2, \cdots, s$ và mỗi đoạn thẳng 
+    $L_i = ((a_i, b_i), (a_i', b_i'))$ từ $J$, 
+    ta sẽ tính ảnh của $z_f(L_i)$ bằng nguyên lý mở rộng Zadeh của 
+    hàm $f$ giới hạn trên đoạn $[a_i, a_i']$. Một cách chính xác: 
+    $z_f(L_i) = ((f(a_i), b_i), (f(a_i'), b_i'))$.
+\item Lấy supremum của các đoạn thẳng thu được, kết quả là tập mờ 
+    $z_f^k(A)$.
+\end{itemize}
+
+BƯỚC 3:
+\begin{itemize}
+\item Nếu $k = M$, thuật toán kết thúc. 
+\item Nếu $k < M$, thay thế $k = k + 1$ và lặp lại từ BƯỚC 1.
+\end{itemize}
+
+OUTPUT:
+\begin{itemize}
+\item Tập các tập mờ $z_f(A),\cdots,z_f^M(A)$
+\end{itemize}
+
+
+\end{document}

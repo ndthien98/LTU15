@@ -1,0 +1,8 @@
+[package]
+name = "dss"
+version = "0.1.0"
+authors = ["QuangTung97 <quangtung29121997@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rusqlite = "*"
