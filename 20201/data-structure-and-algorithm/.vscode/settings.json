@@ -5,6 +5,7 @@
     "__mutex_base": "cpp",
     "optional": "cpp",
     "memory": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "iosfwd": "cpp"
   },
 }
