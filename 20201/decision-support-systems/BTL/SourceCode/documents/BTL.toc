@@ -1,0 +1,9 @@
+\contentsline {chapter}{\numberline {1}Introduction}{2}%
+\contentsline {chapter}{\numberline {2}Related work}{3}%
+\contentsline {chapter}{\numberline {3}Algorithms}{4}%
+\contentsline {section}{\numberline {3.1}Naive bayer}{4}%
+\contentsline {section}{\numberline {3.2}Decision Tree}{4}%
+\contentsline {section}{\numberline {3.3}Logistic Regression}{4}%
+\contentsline {section}{\numberline {3.4}Multi Layer Perception}{4}%
+\contentsline {chapter}{\numberline {4}Result on Kaggle Dataset}{5}%
+\contentsline {chapter}{\numberline {5}Conclusion}{6}%
